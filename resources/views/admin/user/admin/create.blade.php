@@ -11,6 +11,15 @@
                 <div class="modal-body">
                     <div class="row gy-2">
                         <div class="col-md-6">
+                            <label for="designation_id" class="form-label required">Designation </label>
+                            <select name="designation_id" class="form-control">
+                                <option value="">Select</option>
+                                @foreach ($designations as $designation)
+                                    <option value="{{ $designation->id }}">{{ $designation->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-md-6">
                             <label for="name" class="form-label required">Name </label>
                             <input type="text" name="name" class="form-control" required>
                         </div>

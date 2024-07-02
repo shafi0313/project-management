@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Hash;
 use Yajra\DataTables\Facades\DataTables;
 use App\Http\Requests\StoreAdminUserRequest;
 use App\Http\Requests\UpdateAdminUserRequest;
+use App\Models\Designation;
 
 class AdminUserController extends Controller
 {
@@ -53,6 +54,7 @@ class AdminUserController extends Controller
         }
         // $roles = Role::all();
         $data['genders'] = config('datum.gender');
+        $data['designations'] = Designation::where('is_active', 1)->get();
         return view('admin.user.admin.index', $data);
     }
 

@@ -28,6 +28,7 @@ class UpdateAdminUserRequest extends FormRequest
             'gender' => ['required', 'integer', 'in:1,2,3'],
             'phone' => ['required', 'phone:BD'],
             'address' => ['required', 'string', 'min:1', 'max:191'],
+            'designation_id' => ['nullable', 'exists:designations,id'],
             'is_active' => ['nullable', 'boolean'],
             'image' => ['nullable', 'image', 'mimes:jpeg,jpg,JPG,png,webp,svg'],
             // 'old_password' => ['nullable', 'string', 'min:6', 'max:191'],
