@@ -27,8 +27,8 @@
                                 class="form-control">
                         </div>
                         <div class="col-md-6">
-                            <label for="phone" class="form-label required">Phone </label>
-                            <input type="text" name="phone" value="{{ old('phone') ?? $admin_user->phone }}"
+                            <label for="mobile" class="form-label required">mobile </label>
+                            <input type="text" name="mobile" value="{{ old('mobile') ?? $admin_user->phone }}"
                                 class="form-control" oninput="phoneIn(event)">
                         </div>
                         <div class="col-md-6">

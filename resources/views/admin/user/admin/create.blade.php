@@ -28,8 +28,8 @@
                             <input type="email" name="email" class="form-control" required>
                         </div>
                         <div class="col-md-6">
-                            <label for="phone" class="form-label required">phone </label>
-                            <input type="text" name="phone" class="form-control" oninput="phoneIn(event)" required>
+                            <label for="mobile" class="form-label required">phone </label>
+                            <input type="text" name="mobile" class="form-control" oninput="phoneIn(event)" required>
                         </div>
                         <div class="col-md-6">
                             <label for="gender" class="form-label">Gender *</label>

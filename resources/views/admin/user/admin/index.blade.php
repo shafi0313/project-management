@@ -59,9 +59,9 @@
                             title: 'Email'
                         },
                         {
-                            data: 'phone',
-                            name: 'phone',
-                            title: 'Phone'
+                            data: 'mobile',
+                            name: 'mobile',
+                            title: 'mobile'
                         },
                         {
                             data: 'gender',

@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('user_name', 32)->unique()->nullable();
             $table->unsignedTinyInteger('role')->default(0)->comment('1:Admin');
             $table->unsignedTinyInteger('gender')->nullable();
-            $table->string('phone', 32)->nullable();
+            $table->string('mobile', 32)->nullable();
             $table->string('address')->nullable();
             $table->string('image', 32)->nullable();
             $table->foreignId('designation_id')->nullable()->constrained()->onDelete('cascade');
