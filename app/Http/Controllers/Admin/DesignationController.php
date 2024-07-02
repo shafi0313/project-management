@@ -68,12 +68,9 @@ class DesignationController extends Controller
             return $error;
         }
         $data = $request->validated();
-        if ($request->hasFile('image')) {
-            $data['image'] = imgWebpStore($request->image, 'designation', [1920, 1080]);
-        }
 
         try {
-            designation::create($data);
+            Designation::create($data);
             return response()->json(['message' => 'The information has been inserted'], 200);
         } catch (\Exception $e) {
             return response()->json(['message' => 'Oops something went wrong, Please try again.'], 500);
