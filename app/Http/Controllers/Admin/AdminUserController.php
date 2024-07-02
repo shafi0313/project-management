@@ -81,6 +81,7 @@ class AdminUserController extends Controller
         $data = $request->validated();
         $data['password'] = bcrypt($request->password);
         $data['role'] = 1;
+        $data['created_by'] = user()->id;
         if ($request->hasFile('image')) {
             $data['image'] = imgWebpStore($request->image, 'user', [300, 300]);
         }
@@ -113,6 +114,7 @@ class AdminUserController extends Controller
             return $error;
         }
         $data = $adminRequest->validated();
+        $data['created_by'] = user()->id;
         if ($request->password && !Hash::check($request->old_password, $admin_user->password)) {
             return response()->json(['message' => "Old Password Doesn't match!"], 500);
         }
