@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\MyProfileController;
 use App\Http\Controllers\Admin\ProjectController;
 use App\Http\Controllers\Admin\AdminUserController;
+use App\Http\Controllers\Admin\DesignationController;
 use App\Http\Controllers\Setting\AppDbBackupController;
 use App\Http\Controllers\Setting\Permission\RoleController;
 use App\Http\Controllers\Setting\Permission\PermissionController;
@@ -37,3 +38,6 @@ Route::resource('/my-profiles', MyProfileController::class)->only(['index','edit
 
 Route::resource('/projects', ProjectController::class)->except(['show','create']);
 Route::patch('/projects/is-active/{project}', [ProjectController::class, 'status'])->name('projects.is_active');
+
+Route::resource('/designations', DesignationController::class)->except(['show','create']);
+Route::patch('/designations/is-active/{designation}', [DesignationController::class, 'status'])->name('designations.is_active');

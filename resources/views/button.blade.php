@@ -63,9 +63,10 @@
     </span>
 @endif --}}
 
+
 @if ($type == 'is_active')
     <span data-route="{{ $route }}"
-        style="font-size: 36px;line-height: 1;vertical-align: middle;cursor: pointer;" data-value="{{ $row }}"
+        style="font-size: 25px;line-height: 0;vertical-align: middle;cursor: pointer;" data-value="{{ $row }}"
         onclick="changeStatusPatch(this)">
         @if ($row == 1)
             <i class="fa fa-toggle-on text-success" title="Active"></i>

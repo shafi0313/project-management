@@ -68,7 +68,10 @@
                 <div class="collapse" id="sidebarAdmin">
                     <ul class="side-nav-second-level">
                         <li>
-                            <a href="{{ route('admin.admin-users.index') }}">Admin User</a>
+                            <a href="{{ route('admin.designations.index') }}">@lang('Designation')</a>
+                        </li>
+                        <li>
+                            <a href="{{ route('admin.admin-users.index') }}">@lang('Admin User')</a>
                         </li>
                     </ul>
                 </div>

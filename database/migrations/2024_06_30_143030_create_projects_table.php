@@ -18,6 +18,7 @@ return new class extends Migration
             $table->date('deadline')->nullable();
             $table->longText('content')->nullable();
             $table->foreignId('created_by')->constrained('users')->onDelete('cascade');
+            $table->foreignId('updated_by')->nullable()->constrained('users')->onDelete('cascade');
             $table->timestamps();
             $table->softDeletes();
         });

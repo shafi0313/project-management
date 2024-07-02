@@ -65,6 +65,18 @@ class RolesAndPermissionsSeeder extends Seeder
                 'app-backup-manage',
                 'app-backup-delete'
             ],
+            'designation' => [
+                'designation-manage',
+                'designation-add',
+                'designation-edit',
+                'designation-delete',
+            ],
+            'project' => [
+                'project-manage',
+                'project-add',
+                'project-edit',
+                'project-delete',
+            ],
 
         ];
         foreach ($pers as $per => $val) {

@@ -21,9 +21,12 @@ return new class extends Migration
             $table->unsignedTinyInteger('gender')->nullable();
             $table->string('phone', 32)->nullable();
             $table->string('address')->nullable();
+            $table->string('image', 32)->nullable();
+            $table->foreignId('designation_id')->nullable()->constrained()->onDelete('cascade');
             $table->boolean('is_active', [IsActive::ACTIVE, IsActive::INACTIVE])->default(IsActive::ACTIVE);
             $table->boolean('removable')->default(1);
-            $table->string('image', 32)->nullable();
+            $table->foreignId('created_by')->nullable()->constrained('users')->onDelete('cascade');
+            $table->foreignId('updated_by')->nullable()->constrained('users')->onDelete('cascade');
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->rememberToken();
