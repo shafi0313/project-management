@@ -102,7 +102,8 @@ class AdminUserController extends Controller
         if ($request->ajax()) {
             $roles = Role::all();
             $genders = config('var.genders');
-            $modal = view('admin.user.admin.edit')->with(['admin_user' => $admin_user, 'roles' => $roles, 'genders' => $genders])->render();
+            $designations = Designation::where('is_active', 1)->get();
+            $modal = view('admin.user.admin.edit')->with(['admin_user' => $admin_user, 'roles' => $roles, 'genders' => $genders, 'designations' => $designations])->render();
             return response()->json(['modal' => $modal], 200);
         }
         return abort(500);

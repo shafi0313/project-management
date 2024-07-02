@@ -36,8 +36,8 @@ Route::patch('/admin-users/is-active/{user}', [AdminUserController::class, 'stat
 
 Route::resource('/my-profiles', MyProfileController::class)->only(['index','edit']);
 
-Route::resource('/projects', ProjectController::class)->except(['show','create']);
-Route::patch('/projects/is-active/{project}', [ProjectController::class, 'status'])->name('projects.is_active');
-
 Route::resource('/designations', DesignationController::class)->except(['show','create']);
 Route::patch('/designations/is-active/{designation}', [DesignationController::class, 'status'])->name('designations.is_active');
+
+Route::resource('/projects', ProjectController::class)->except(['show','create']);
+Route::patch('/projects/is-active/{project}', [ProjectController::class, 'status'])->name('projects.is_active');
