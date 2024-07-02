@@ -80,8 +80,12 @@
     <link href="{{ asset('common/plugins/cute-alert/cute-alert.css') }}" rel="stylesheet">
     <script src="{{ asset('common/plugins/cute-alert/cute-alert.js') }}"></script>
     {{-- Select 2 --}}
-    <link src="{{ asset('common/plugins/select2/css/select2.min.css') }}">
-    <script src="{{ asset('common/plugins/select2/js/select2.min.js') }}"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css"
+        integrity="sha512-nMNlpuaDPrqlEls3IX/Q56H36qvBASwb3ipuo3MxeWbsQB1881ox0cRv7UPTgBlriqoynt35KjEwgGUeUXIPnw=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"
+        integrity="sha512-2ImtlRlf2VVmiGZsjm9bEyhjGW4dU7B6TNwh/hx/iSByxNENtj3WVE6o/9Lj4TJeVXPi4bnOIMXFIJJAeufa0A=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
     <script src="{{ asset('common/js/http.js') }}"></script>
     <script src="{{ asset('common/js/custom.js') }}"></script>

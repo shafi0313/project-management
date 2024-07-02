@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\MyProfileController;
+use App\Http\Controllers\Admin\AjaxController;
 use App\Http\Controllers\Admin\ProjectController;
 use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\Admin\DesignationController;
@@ -29,6 +30,11 @@ Route::controller(AppDbBackupController::class)->prefix('app-db-backup')->group(
     Route::post('/backup-download/{name}/{ext}', 'downloadBackup')->name('backup.download');
     Route::post('/backup-delete/{name}/{ext}', 'deleteBackup')->name('backup.delete');
 });
+
+// Global Ajax Route
+Route::get('select-2-ajax', [AjaxController::class, 'select2'])->name('select2');
+Route::post('response', [AjaxController::class, 'response'])->name('ajax');
+
 
 
 Route::resource('/admin-users', AdminUserController::class)->except(['show','create']);

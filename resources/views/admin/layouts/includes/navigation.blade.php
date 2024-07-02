@@ -77,6 +77,13 @@
                 </div>
             </li>
 
+            <li class="side-nav-item">
+                <a href="{{ route('admin.projects.index') }}" class="side-nav-link">
+                    <i class="fa-solid fa-folder-open text-warning"></i>
+                    <span> @lang('Project') </span>
+                </a>
+            </li>
+
             <li class="side-nav-title mt-2">Settings</li>
             {{-- settings --}}
             <li class="side-nav-item">
