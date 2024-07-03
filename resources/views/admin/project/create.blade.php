@@ -24,7 +24,7 @@
                         </div>
                         <div class="col-md-6">
                             <label for="name" class="form-label required">User </label>
-                            <select name="user_id" class="form-select" id="user_id" required>
+                            <select name="user_id[]" class="form-select" id="user_id" required>
                             </select>
                         </div>
                         <div class="col-md-12">

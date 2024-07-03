@@ -55,6 +55,21 @@
                             title: 'name'
                         },
                         {
+                            data: 'user',
+                            name: 'user',
+                            title: 'user'
+                        },
+                        {
+                            data: 'created_by.name',
+                            name: 'created_by.name',
+                            title: 'Created By'
+                        },
+                        {
+                            data: 'updated_by.name',
+                            name: 'updated_by.name',
+                            title: 'updated By'
+                        },
+                        {
                             data: 'is_active',
                             name: 'is_active',
                             title: 'Status'

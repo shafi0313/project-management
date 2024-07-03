@@ -21,11 +21,16 @@ class ProjectController extends Controller
         }
 
         if ($request->ajax()) {
-            $projects = Project::query();
+            $projects = Project::with(['users', 'createdBy', 'updatedBy']);
             return DataTables::of($projects)
                 ->addIndexColumn()
                 ->addColumn('content', function ($row) {
-                    return '<textarea class="form-control>' . $row->content . '</textarea>';
+                    return '<div>' . $row->content . '</div>';
+                })
+                ->addColumn('user', function ($row) {
+                    return $row->users->map(function ($user) {
+                        return '<span class="badge text-bg-success">' . $user->name . '</span>';
+                    })->implode(' ');
                 })
                 ->addColumn('image', function ($row) {
                     $path = imagePath('project', $row->image);
@@ -46,7 +51,7 @@ class ProjectController extends Controller
                     }
                     return $btn;
                 })
-                ->rawColumns(['content', 'is_active', 'action'])
+                ->rawColumns(['user','content', 'is_active', 'action'])
                 ->make(true);
         }
         return view('admin.project.index');
@@ -75,14 +80,17 @@ class ProjectController extends Controller
             return $error;
         }
         $data = $request->validated();
+        $data['created_by'] = user()->id;
         if ($request->hasFile('image')) {
             $data['image'] = imgWebpStore($request->image, 'project', [1920, 1080]);
         }
 
         try {
-            project::create($data);
+            $project = Project::create($data);
+            $project->users()->sync($request->user_id);
             return response()->json(['message' => 'The information has been inserted'], 200);
         } catch (\Exception $e) {
+            // return response()->json(['message' => $e->getMessage()], 500);
             return response()->json(['message' => 'Oops something went wrong, Please try again.'], 500);
         }
     }
