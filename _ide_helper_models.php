@@ -1,14 +1,81 @@
 <?php
 
-namespace App\Models;
+// @formatter:off
+// phpcs:ignoreFile
+/**
+ * A helper file for your Eloquent Models
+ * Copy the phpDocs from this file to the correct Model,
+ * And remove them from this file, to prevent double declarations.
+ *
+ * @author Barry vd. Heuvel <barryvdh@gmail.com>
+ */
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Spatie\Permission\Traits\HasRoles;
-use Illuminate\Notifications\Notifiable;
-use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Foundation\Auth\User as Authenticatable;
 
+namespace App\Models{
+/**
+ * 
+ *
+ * @property int $id
+ * @property string $name
+ * @property int $is_active
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property \Illuminate\Support\Carbon|null $deleted_at
+ * @method static \Database\Factories\DesignationFactory factory($count = null, $state = [])
+ * @method static \Illuminate\Database\Eloquent\Builder|Designation newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Designation newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Designation onlyTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder|Designation query()
+ * @method static \Illuminate\Database\Eloquent\Builder|Designation whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Designation whereDeletedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Designation whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Designation whereIsActive($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Designation whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Designation whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Designation withTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder|Designation withoutTrashed()
+ * @mixin \Eloquent
+ */
+	class Designation extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * 
+ *
+ * @property int $id
+ * @property string $name
+ * @property string $start_date
+ * @property string|null $deadline
+ * @property string|null $content
+ * @property int $created_by
+ * @property int|null $updated_by
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property \Illuminate\Support\Carbon|null $deleted_at
+ * @method static \Database\Factories\ProjectFactory factory($count = null, $state = [])
+ * @method static \Illuminate\Database\Eloquent\Builder|Project newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Project newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Project onlyTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder|Project query()
+ * @method static \Illuminate\Database\Eloquent\Builder|Project whereContent($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Project whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Project whereCreatedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Project whereDeadline($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Project whereDeletedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Project whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Project whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Project whereStartDate($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Project whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Project whereUpdatedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Project withTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder|Project withoutTrashed()
+ * @mixin \Eloquent
+ */
+	class Project extends \Eloquent {}
+}
+
+namespace App\Models{
 /**
  * 
  *
@@ -77,42 +144,6 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
  * @method static \Illuminate\Database\Eloquent\Builder|User withoutTrashed()
  * @mixin \Eloquent
  */
-class User extends Authenticatable
-{
-    use HasFactory, Notifiable, SoftDeletes, HasRoles;
-
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
-    protected $guarded = ['id'];
-    // protected $fillable = [
-    //     'name',
-    //     'email',
-    //     'password',
-    // ];
-
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var array<int, string>
-     */
-    protected $hidden = [
-        'password',
-        'remember_token',
-    ];
-
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
-    protected function casts(): array
-    {
-        return [
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed',
-        ];
-    }
+	class User extends \Eloquent {}
 }
+

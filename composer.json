@@ -18,6 +18,7 @@
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.13",
+        "barryvdh/laravel-ide-helper": "^3.0",
         "fakerphp/faker": "^1.23",
         "laracraft-tech/laravel-schema-rules": "^1.4",
         "laravel/pint": "^1.13",
