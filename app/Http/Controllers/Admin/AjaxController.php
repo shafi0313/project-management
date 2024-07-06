@@ -15,6 +15,7 @@ use App\Models\Division;
 use App\Models\Supplier;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\Project;
 
 class AjaxController extends Controller
 {
@@ -35,12 +36,12 @@ class AjaxController extends Controller
                             ];
                         })->toArray();
                     break;
-                case 'getCustomer':
-                    $response = Customer::select('id', 'name')
-                        ->whereVendorId(venId())->where('name', 'like', "%{$request->q}%")
-                        ->orderBy('name')
+                case 'getProject':
+                    $response = Project::select('id', 'name')
+                        ->where('name', 'like', "%{$request->q}%")
                         ->whereIsActive(1)
-                        ->limit(10)
+                        ->orderBy('name')
+                        ->limit(20)
                         ->get()->map(function ($data) {
                             return [
                                 'id' => $data->id,
@@ -81,76 +82,6 @@ class AjaxController extends Controller
 
                     $response = $query->get()
                         ->map(function ($data) {
-                            return [
-                                'id' => $data->id,
-                                'text' => $data->name,
-                            ];
-                        })->toArray();
-                    break;
-                case 'getPAProduct':
-                    $response = Product::with(['generic' => fn ($q) => $q->select('id', 'name')])
-                        ->select('id', 'name', 'generic_id')
-                        ->whereVendorId(1)
-                        ->whereCompany($request->data['company'])
-                        ->where('name', 'like', "%{$request->q}%")
-                        ->whereIsActive(1)
-                        ->orderBy('name')
-                        ->limit(20)
-                        ->get()->map(function ($data) {
-                            return [
-                                'id' => $data->id,
-                                'text' => $data->name,
-                            ];
-                        })->toArray();
-                    break;
-                case 'getPPProduct':
-                    $response = Product::with(['generic' => fn ($q) => $q->select('id', 'name')])
-                        ->select('id', 'name', 'generic_id')
-                        ->whereVendorId(1)
-                        ->whereCompany(1)
-                        ->where('name', 'like', "%{$request->q}%")
-                        ->whereIsActive(1)
-                        ->orderBy('name')
-                        ->limit(15)
-                        ->get()->map(function ($data) {
-                            return [
-                                'id' => $data->id,
-                                'text' => $data->name,
-                            ];
-                        })->toArray();
-                    break;
-                case 'getGeneric':
-                    $response = Generic::select('id', 'name')->where(venQuery())
-                        ->whereIsActive(1)
-                        ->where('name', 'like', "%{$request->q}%")
-                        ->limit(30)
-                        ->orderBy('name')->get()->map(function ($generic) {
-                            return [
-                                'id' => $generic->id,
-                                'text' => $generic->name,
-                            ];
-                        })->toArray();
-                    break;
-                case 'getBrand':
-                    $response = Brand::select('id', 'name')->where(venQuery())
-                        ->whereIsActive(1)
-                        ->where('name', 'like', "%{$request->q}%")
-                        ->orderBy('name')
-                        ->limit(10)
-                        ->get()->map(function ($data) {
-                            return [
-                                'id' => $data->id,
-                                'text' => $data->name,
-                            ];
-                        })->toArray();
-                    break;
-                case 'getSize':
-                    $response = Size::select('id', 'name')->where(venQuery())
-                        ->whereIsActive(1)
-                        ->where('name', 'like', "%{$request->q}%")
-                        ->orderBy('name')
-                        ->limit(10)
-                        ->get()->map(function ($data) {
                             return [
                                 'id' => $data->id,
                                 'text' => $data->name,

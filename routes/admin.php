@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\MyProfileController;
 use App\Http\Controllers\Admin\AjaxController;
+use App\Http\Controllers\Admin\TaskController;
 use App\Http\Controllers\Admin\ProjectController;
 use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\Admin\DesignationController;
@@ -45,5 +46,7 @@ Route::resource('/my-profiles', MyProfileController::class)->only(['index','edit
 Route::resource('/designations', DesignationController::class)->except(['show','create']);
 Route::patch('/designations/is-active/{designation}', [DesignationController::class, 'status'])->name('designations.is_active');
 
-Route::resource('/projects', ProjectController::class)->except(['show','create']);
+Route::resource('/projects', ProjectController::class)->except(['create']);
 Route::patch('/projects/is-active/{project}', [ProjectController::class, 'status'])->name('projects.is_active');
+
+Route::resource('/tasks', TaskController::class)->except(['create']);

@@ -1,10 +1,3 @@
-{{-- <button href="javascript: void(0);" class="fs-18 px-1">
-    <i class="fa-solid fa-pen-to-square text-primary"></i>
-</button>
-<a href="javascript: void(0);" class="fs-18 px-1">
-    <i class="fa-solid fa-trash text-danger"></i>
-</a> --}}
-
 @if ($type == 'ajax-edit')
     <button data-route="{{ $route }}" data-value="{{ $row->id }}" onclick="ajaxEdit(this)"
         class='text-primary _btn' title="@lang('Edit')">
@@ -32,22 +25,17 @@
     </button>
 @endif
 
-@if ($type == 'view')
+@if ($type == 'ajax-show')
+    <button data-route="{{ $route }}" data-value="{{ $row->id }}" onclick="ajaxShow(this)"
+        class='text-secondary _btn' title="@lang('Show')">
+        <i class='fa fa-eye'></i>
+    </button>
+@endif
+
+@if ($type == 'show')
     <a href="{{ route($route . '.show', $row->id) }}" class='text-secondary _btn' title="@lang('Show-details')">
         <i class='fa fa-eye'></i>
     </a>
-@endif
-
-@if ($type == 'impersonate')
-    @canBeImpersonated($row)
-    <a href="{{ route('panel.impersonate', $row->id) }}" class="btn btn-success mb-2" target="_blank"
-        title="@lang('user.impersonate-user')" title="@lang('user.impersonate-user')"><i class="fa btn-white fa-user-secret"></i></a>
-    @endCanBeImpersonated
-@endif
-
-@if ($type == 'log')
-    <a href="{{ route('panel.user.activitlog', $row->id) }}" class="btn  btn-sm btn-warning mb-2" target="_blank"
-        title="@lang('activity.log')" title="@lang('activity.log')"><i class="fa btn-white fa-history"></i></a>
 @endif
 
 {{-- @if ($type == 'status')

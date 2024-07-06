@@ -1,7 +1,7 @@
 <script>
     $(document).ready(function() {
     $('.note_content').summernote({
-        height: 200,
+        height: '{{ $height ?? 300 }}',
         callbacks: {
             onMediaDelete: function(target) {
                 let imgSrc = target[0].src;

@@ -3,7 +3,6 @@
 use Carbon\Carbon;
 use App\Models\User;
 use App\Models\Branch;
-use App\Models\Ledger;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Intervention\Image\Facades\Image;
@@ -53,9 +52,9 @@ if (!function_exists('strPad4')) {
 if (!function_exists('strPad6')) {
     function strPad6($data)
     {
-        if($data){
+        if ($data) {
             return str_pad($data, 6, '0', STR_PAD_LEFT);
-        }else{
+        } else {
             return '';
         }
     }
@@ -561,39 +560,40 @@ if (!function_exists('niceFileSize')) {
         }
     }
 
-    if (!function_exists('orderStatus')) {
-        function orderStatus($status)
+    if (!function_exists('projectStatus')) {
+        function projectStatus($status)
         {
             return match ((int)$status) {
-                1 => '<span class="badge bg-warning text-dark">Pending</span>',
-                2 => '<span class="badge bg-secondary">Processing</span>',
-                3 => '<span class="badge bg-info text-dark">Cooking</span>',
-                4 => '<span class="badge bg-success">Complete</span>',
-                5 => '<span class="badge bg-primary">Served</span>',
-                6 => '<span class="badge bg-warning text-dark">Picked</span>',
-                7 => '<span class="badge bg-success">Delivered</span>',
-                8 => '<span class="badge bg-warning">Cancel By Customer</span>',
-                9 => '<span class="badge bg-danger">Cancel By Admin</span>',
+                1 => '<span class="badge bg-warning">Ongoing</span>',
+                2 => '<span class="badge bg-secondary">On Hold</span>',
+                3 => '<span class="badge bg-success">Finished</span>',
+                default => 'unknown'
+            };
+        }
+    }
+    if (!function_exists('taskStatus')) {
+        function taskStatus($status)
+        {
+            return match ((int)$status) {
+                1 => '<span class="badge bg-warning">Ongoing</span>',
+                2 => '<span class="badge bg-secondary">On Hold</span>',
+                3 => '<span class="badge bg-success">Finished</span>',
                 default => 'unknown'
             };
         }
     }
 
-    if (!function_exists('weightUnit')) {
-        function weightUnit()
+    if (!function_exists('priority')) {
+        function priority($status)
         {
-            return [
-                ''    => 'Select Unit',
-                'G'   => 'G',
-                'KG'  => 'KG',
-                'ML'  => 'ML',
-                'L'   => 'L',
-                'Pcs' => 'Pcs'
-            ];
+            return match ($status) {
+                'low' => '<span class="badge bg-primary">Low</span>',
+                'medium' => '<span class="badge bg-warning">Medium</span>',
+                'high' => '<span class="badge bg-danger">Heigh</span>',
+                default => 'unknown'
+            };
         }
     }
-
-
 
 
     if (!function_exists('numberNotation')) {
@@ -611,107 +611,6 @@ if (!function_exists('niceFileSize')) {
                 $formattedNumber = rtrim($formattedNumber, '.');
             }
             return $formattedNumber . $suffixes[$suffixIndex];
-        }
-    }
-
-    // P/ L Calculations
-    if (!function_exists('profitLoos')) {
-        function profitLoos($date)
-        {
-            $startDate    = $date->format('Y') . '-01-01';
-            $endDate      = $date->format('Y-m-d');
-            $get          = ['debit', 'credit', 'balance', 'code_type', 'balance_type'];
-            $incomes      = Ledger::select($get)->whereBranch_id(user()->branch_id)->whereBetween('date', [$startDate, $endDate])->where('chart_code', 'like', '1%')->get();
-            $expenses     = Ledger::select($get)->whereBranch_id(user()->branch_id)->whereBetween('date', [$startDate, $endDate])->where('chart_code', 'like', '2%')->get();
-            $incomeCredit = $incomeDebit = $expenseDebit = $expenseCredit = 0;
-
-            foreach ($incomes as $income) {
-                if ($income->code_type == 2) {
-                    if ($income->balance_type == 2) {
-                        $incomeCredit += abs($income->balance);
-                    } else {
-                        $incomeDebit += abs($income->balance);
-                    }
-                }
-                if ($income->code_type == 1) {
-                    if ($income->balance_type == 1) {
-                        $incomeDebit += abs($income->balance);
-                    } else {
-                        $incomeCredit += abs($income->balance);
-                    }
-                }
-            }
-
-            foreach ($expenses as $expense) {
-                if ($expense->code_type == 1) {
-                    if ($expense->balance_type == 1) {
-                        $expenseCredit += abs($expense->balance);
-                    } else {
-                        $expenseDebit += abs($expense->balance);
-                    }
-                }
-                if ($expense->code_type == 2) {
-                    if ($expense->balance_type == 2) {
-                        $expenseDebit += abs($expense->balance);
-                    } else {
-                        $expenseCredit += abs($expense->balance);
-                    }
-                }
-            }
-
-            $exp = abs($expenseDebit) - abs($expenseCredit); //Debit
-            $inc = abs($incomeCredit) - abs($incomeDebit); //Credit
-            return (abs($inc) - abs($exp));
-        }
-    }
-    // Retain
-    if (!function_exists('retainEarning')) {
-        function retainEarning($date)
-        {
-            $startDate = $date->format('Y') - 1 . '-01-01';
-            $endDate   = $date->format('Y') - 1 . '-12-31';
-            // $ledger    = Ledger::whereBranch_id(user()->branch_id)->whereBetween('date', [$startDate, $endDate]);
-            $get      = ['debit', 'credit', 'balance', 'code_type', 'balance_type'];
-            $incomes  = Ledger::select($get)->whereBranch_id(user()->branch_id)->whereBetween('date', [$startDate, $endDate])->where('chart_code', 'like', '1%')->get();
-            $expenses = Ledger::select($get)->whereBranch_id(user()->branch_id)->whereBetween('date', [$startDate, $endDate])->where('chart_code', 'like', '2%')->get();
-
-            $incomeCredit = $incomeDebit = $expenseDebit = $expenseCredit = 0;
-            foreach ($incomes as $income) {
-                if ($income->balance_type == 2) {
-                    if ($income->code_type == 2) {
-                        $incomeCredit += abs($income->balance);
-                    } else {
-                        $incomeDebit += abs($income->balance);
-                    }
-                }
-                if ($income->balance_type == 1) {
-                    if ($income->code_type == 2) {
-                        $incomeDebit += abs($income->balance);
-                    } else {
-                        $incomeCredit += abs($income->balance);
-                    }
-                }
-            }
-
-            foreach ($expenses as $expense) {
-                if ($expense->balance_type == 2) {
-                    if ($expense->code_type == 1) {
-                        $expenseDebit += abs($expense->balance);
-                    } else {
-                        $expenseCredit += abs($expense->balance);
-                    }
-                }
-                if ($expense->balance_type == 1) {
-                    if ($expense->balance == 2) {
-                        $expenseCredit += abs($expense->balance);
-                    } else {
-                        $expenseDebit += abs($expense->balance);
-                    }
-                }
-            }
-            $exp = abs($expenseDebit) - abs($expenseCredit); //Debit
-            $inc = abs($incomeCredit) - abs($incomeDebit); //Credit
-            return (abs($inc) - abs($exp));
         }
     }
 }

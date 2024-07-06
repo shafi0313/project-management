@@ -133,6 +133,28 @@ function ajaxEdit(arg, type) {
     });
 }
 
+function ajaxShow(arg, type) {
+    let args = $(arg);
+    $.ajax({
+        url: args.data("route"),
+        type: "get",
+        data: {
+            id: args.data("value"),
+        },
+        success: (res) => {
+            $("#ajax_show_modal_container").html(res.modal);
+            $("#showModal").modal("show");
+        },
+        error: (err) => {
+            swal({
+                icon: "error",
+                title: "Oops...",
+                text: err.responseJSON.message,
+            });
+        },
+    });
+}
+
 function ajaxStoreModal(e, form, modal) {
     e.preventDefault();
     // let formData = $(form).serialize();

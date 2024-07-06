@@ -3,14 +3,13 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Models\Task;
-use App\Models\Project;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\StoreTaskRequest;
+use App\Http\Requests\UpdateTaskRequest;
 use Yajra\DataTables\Facades\DataTables;
-use App\Http\Requests\StoreProjectRequest;
-use App\Http\Requests\UpdateProjectRequest;
 
-class ProjectController extends Controller
+class TaskController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -20,12 +19,21 @@ class ProjectController extends Controller
         if ($error = $this->authorize('project-manage')) {
             return $error;
         }
-        
 
         if ($request->ajax()) {
-            $projects = Project::with(['users', 'createdBy', 'updatedBy']);
-            return DataTables::of($projects)
+            if (user()->designation_id == 1) {
+                $tasks = Task::with(['users', 'createdBy', 'updatedBy']);
+            } else {
+                $tasks = Task::with(['users', 'createdBy', 'updatedBy'])
+                    ->whereHas('users', function ($query) {
+                        $query->where('user_id', auth()->id());
+                    });
+            }
+            return DataTables::of($tasks)
                 ->addIndexColumn()
+                ->addColumn('priority', function ($row) {
+                    return priority($row->priority);
+                })
                 ->addColumn('content', function ($row) {
                     return '<div>' . $row->content . '</div>';
                 })
@@ -45,52 +53,46 @@ class ProjectController extends Controller
                 })
                 ->addColumn('action', function ($row) {
                     $btn = '';
-                    $btn .= view('button', ['type' => 'show', 'route' => 'admin.projects', 'row' => $row]);
-                    if (userCan('project-edit')) {
-                        $btn .= view('button', ['type' => 'ajax-edit', 'route' => route('admin.projects.edit', $row->id), 'row' => $row]);
-                    }
+                    $btn .= view('button', ['type' => 'ajax-show', 'route' => route('admin.tasks.show', $row->id), 'row' => $row]);
+                    // if (userCan('project-edit')) {
+                    //     $btn .= view('button', ['type' => 'ajax-edit', 'route' => route('admin.projects.edit', $row->id), 'row' => $row]);
+                    // }
                     if (userCan('project-delete')) {
-                        $btn .= view('button', ['type' => 'ajax-delete', 'route' => route('admin.projects.destroy', $row->id), 'row' => $row, 'src' => 'dt']);
+                        $btn .= view('button', ['type' => 'ajax-delete', 'route' => route('admin.tasks.destroy', $row->id), 'row' => $row, 'src' => 'dt']);
                     }
                     return $btn;
                 })
-                ->rawColumns(['user','content', 'is_active', 'action'])
+                ->rawColumns(['priority', 'user', 'content', 'is_active', 'action'])
                 ->make(true);
         }
-        return view('admin.project.index');
+        return view('admin.project.show');
     }
 
-    function status(Project $project)
+    /**
+     * Show the form for creating a new resource.
+     */
+    public function create()
     {
-        if ($error = $this->authorize('project-edit')) {
-            return $error;
-        }
-        $project->is_active = $project->is_active  == 1 ? 0 : 1;
-        try {
-            $project->save();
-            return response()->json(['message' => 'The status has been updated'], 200);
-        } catch (\Exception $e) {
-            return response()->json(['message' => 'Oops something went wrong, Please try again.'], 500);
-        }
+        //
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreProjectRequest $request)
+    public function store(StoreTaskRequest $request)
     {
-        if ($error = $this->authorize('project-add')) {
+        if ($error = $this->authorize('task-add')) {
             return $error;
         }
         $data = $request->validated();
         $data['created_by'] = user()->id;
-        if ($request->hasFile('image')) {
-            $data['image'] = imgWebpStore($request->image, 'project', [1920, 1080]);
-        }
+        // if ($request->hasFile('image')) {
+        //     $data['image'] = imgWebpStore($request->image, 'project', [1920, 1080]);
+        // }
 
         try {
-            $project = Project::create($data);
-            $project->users()->sync($request->user_id);
+            $task = Task::create($data);
+            $task->users()->sync($request->user_id);
             return response()->json(['message' => 'The information has been inserted'], 200);
         } catch (\Exception $e) {
             // return response()->json(['message' => $e->getMessage()], 500);
@@ -101,25 +103,30 @@ class ProjectController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Project $project)
+    public function show(Request $request, Task $task)
     {
-        if ($error = $this->authorize('project-show')) {
+        // return $task;
+        if ($error = $this->authorize('task-show')) {
             return $error;
         }
-        $project->load(['users', 'createdBy', 'updatedBy']);
-        return view('admin.project.show', compact('project'));
+        if ($request->ajax()) {
+            $task->load(['project', 'users', 'createdBy', 'updatedBy']);
+            $modal = view('admin.task.show')->with(['task' => $task])->render();
+            return response()->json(['modal' => $modal], 200);
+        }
+        return abort(500);
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Project $project)
+    public function edit(Request $request, Task $task)
     {
-        if ($error = $this->authorize('project-edit')) {
+        if ($error = $this->authorize('task-show')) {
             return $error;
         }
         if ($request->ajax()) {
-            $modal = view('admin.project.edit')->with(['project' => $project])->render();
+            $modal = view('admin.project.edit')->with(['task' => $task])->render();
             return response()->json(['modal' => $modal], 200);
         }
         return abort(500);
@@ -128,35 +135,22 @@ class ProjectController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateProjectRequest $request, Project $project)
+    public function update(UpdateTaskRequest $request, Task $task)
     {
-        if ($error = $this->authorize('project-add')) {
-            return $error;
-        }
-        $data = $project->validated();
-        $image = $project->image;
-        if ($request->hasFile('image')) {
-            $data['image'] = imgWebpUpdate($request->image, 'user', [1920, 1080], $image);
-        }
-        try {
-            $project->update($data);
-            return response()->json(['message' => 'The information has been updated'], 200);
-        } catch (\Exception $e) {
-            return response()->json(['message' => 'Oops something went wrong, Please try again'], 500);
-        }
+        //
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Project $project)
+    public function destroy(Task $task)
     {
-        if ($error = $this->authorize('project-delete')) {
+        if ($error = $this->authorize('task-delete')) {
             return $error;
         }
         try {
-            imgUnlink('project', $project->image);
-            $project->delete();
+            // imgUnlink('project', $project->image);
+            $task->delete();
             return response()->json(['message' => 'The information has been deleted'], 200);
         } catch (\Exception $e) {
             return response()->json(['message' => 'Oops something went wrong, Please try again'], 500);

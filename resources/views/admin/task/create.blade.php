@@ -1,33 +1,51 @@
-<div class="modal fade" id="createModal" tabindex="-1" aria-labelledby="createModalLabel" aria-hidden="true">
+<div class="modal fade" id="createModalTask" tabindex="-1" aria-labelledby="createModalTaskLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-xl">
         <div class="modal-content">
             <div class="modal-header">
-                <h1 class="modal-title fs-5" id="createModalLabel">Add Project</h1>
+                <h1 class="modal-title fs-5" id="createModalTaskLabel">Add Task</h1>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <form onsubmit="ajaxStoreModal(event, this, 'createModal')" action="{{ route('admin.projects.store') }}"
+            <form onsubmit="ajaxStoreModal(event, this, 'createModalTask')" action="{{ route('admin.tasks.store') }}"
                 method="POST" enctype="multipart/form-data">
                 @csrf
                 <div class="modal-body">
                     <div class="row gy-2">
-                        <div class="col-md-6">
+                        @if (isset($project_id))
+                            <input type="hidden" name="project_id" value="{{ $project_id }}">
+                        @else
+                            <div class="col-md-8">
+                                <label for="name" class="form-label required">Project </label>
+                                <select name="project_id" class="form-select" id="project_id" required>
+                                </select>
+                            </div>
+                        @endif
+                        <div class="col-md-8">
                             <label for="name" class="form-label required">Name </label>
                             <input type="text" name="name" class="form-control" required>
                         </div>
-                        <div class="col-md-3">
-                            <label for="start_date" class="form-label required">start date </label>
-                            <input type="date" name="start_date" class="form-control" required>
+                        <div class="col-md-4">
+                            <label for="priority" class="form-label required">Priority </label>
+                            <select name="priority" class="form-select" required>
+                                <option value="">Select</option>
+                                @foreach (config('var.priorities') as $key => $value)
+                                    <option value="{{ $key }}">{{ $value }}</option>
+                                @endforeach
+                            </select>
                         </div>
-                        <div class="col-md-3">
-                            <label for="deadline" class="form-label">deadline </label>
-                            <input type="date" name="deadline" class="form-control">
-                        </div>
-                        <div class="col-md-6">
-                            <label for="name" class="form-label required">User </label>
+                        <div class="col-md-8">
+                            <label for="name" class="form-label required">Assign Users </label>
                             <select name="user_id[]" class="form-select" id="user_id" required>
                             </select>
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-4">
+                            <label for="start_date" class="form-label required">start date </label>
+                            <input type="date" name="start_date" class="form-control" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="due_date" class="form-label">due date </label>
+                            <input type="date" name="due_date" class="form-control">
+                        </div>
+                        <div class="col-md-4">
                             <label for="status" class="form-label required">Status </label>
                             <select name="status" class="form-select" required>
                                 <option value="">Select</option>
@@ -36,6 +54,7 @@
                                 @endforeach
                             </select>
                         </div>
+
                         <div class="col-md-12">
                             <label for="content" class="form-label">content </label>
                             <textarea name="content" class="form-control note_content"></textarea>

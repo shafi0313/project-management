@@ -109,6 +109,7 @@
 
     @stack('scripts')
     <div id="ajax_modal_container"></div>
+    <div id="ajax_show_modal_container"></div>
 </body>
 
 </html>
