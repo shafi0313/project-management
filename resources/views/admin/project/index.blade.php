@@ -56,9 +56,19 @@
                             title: 'name'
                         },
                         {
+                            data: 'progress',
+                            name: 'progress',
+                            title: 'progress'
+                        },
+                        {
                             data: 'user',
                             name: 'user',
                             title: 'user'
+                        },
+                        {
+                            data: 'content',
+                            name: 'content',
+                            title: 'content'
                         },
                         {
                             data: 'created_by.name',

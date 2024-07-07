@@ -8,11 +8,31 @@
                 {!! projectStatus($project->status) !!}
                 <hr>
                 <div class="row ">
+                    @php
+                        $totalTasks = $project->tasks->count();
+                        $completedTasks = $project->tasks->where('status', 3)->count();
+
+                        if ($totalTasks > 0) {
+                            $percentage = ($completedTasks / $totalTasks) * 100;
+                        } else {
+                            $percentage = 0;
+                        }
+                        if ($percentage < 20) {
+                            $bg = 'bg-danger';
+                        } elseif ($percentage < 40) {
+                            $bg = 'bg-warning';
+                        } elseif ($percentage < 60) {
+                            $bg = 'bg-info';
+                        } elseif ($percentage < 80) {
+                            $bg = 'bg-primary';
+                        } else {
+                            $bg = 'bg-success';
+                        }
+                    @endphp
                     <div class="col-md-3">
                         <label class="fw-bold">Project Progress:</label>
-                        <div class="progress" role="progressbar" aria-label="Success example" aria-valuenow="25"
-                            aria-valuemin="0" aria-valuemax="100">
-                            <div class="progress-bar bg-success" style="width: 25%">25%</div>
+                        <div class="progress" role="progressbar" aria-valuenow="{{ $percentage }}" aria-valuemin="0" aria-valuemax="100">
+                            <div class="progress-bar {{ $bg }}" style="width:{{ $percentage }}%">{{ $percentage }}%</div>
                         </div>
                     </div>
                     <div class="col">

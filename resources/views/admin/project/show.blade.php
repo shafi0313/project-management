@@ -3,6 +3,9 @@
 @section('content')
     @include('admin.layouts.includes.breadcrumb', ['title' => ['', 'Project', 'Index']])
 
+    <script src="https://unpkg.com/dropzone@5/dist/min/dropzone.min.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/dropzone@5/dist/min/dropzone.min.css" type="text/css" />
+
     <div class="row">
         <div class="col-12">
             <div class="card">
@@ -42,10 +45,10 @@
                     <div class="tab-content" id="myTabContent">
                         @include('admin.project.summary')
                         @include('admin.project.task')
+                        @include('admin.project.attachment')
 
                         {{-- <div class="tab-pane fade" id="contact-tab-pane" role="tabpanel" aria-labelledby="contact-tab" tabindex="0">...</div> --}}
-                        <div class="tab-pane fade" id="attachment-tab-pane" role="tabpanel" aria-labelledby="attachment-tab"
-                            tabindex="0">...</div>
+
                     </div>
                     <!-- end row-->
                 </div> <!-- end card-body -->
@@ -127,7 +130,7 @@
                     // responsive: true,
                     // scrollX: true,
                     // scrollY: 400,
-                    ajax: "{{ route('admin.tasks.index') }}",
+                    ajax: "{{ route('admin.projects.tasks', $project->id) }}",
                     columns: [{
                             data: 'DT_RowIndex',
                             name: 'DT_RowIndex',
@@ -141,6 +144,11 @@
                             data: 'name',
                             name: 'name',
                             title: 'name'
+                        },
+                        {
+                            data: 'content',
+                            name: 'content',
+                            title: 'content'
                         },
                         {
                             data: 'user',
@@ -161,11 +169,6 @@
                             data: 'updated_by.name',
                             name: 'updated_by.name',
                             title: 'updated By'
-                        },
-                        {
-                            data: 'is_active',
-                            name: 'is_active',
-                            title: 'Status'
                         },
                         {
                             data: 'action',

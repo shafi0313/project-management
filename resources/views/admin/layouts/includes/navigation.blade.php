@@ -83,6 +83,12 @@
                     <span> @lang('Project') </span>
                 </a>
             </li>
+            <li class="side-nav-item">
+                <a href="{{ route('admin.tasks.index') }}" class="side-nav-link">
+                    <i class="fa-solid fa-list-check text-info"></i>
+                    <span> @lang('Task') </span>
+                </a>
+            </li>
 
             <li class="side-nav-title mt-2">Settings</li>
             {{-- settings --}}

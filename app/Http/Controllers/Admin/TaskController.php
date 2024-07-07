@@ -22,9 +22,9 @@ class TaskController extends Controller
 
         if ($request->ajax()) {
             if (user()->designation_id == 1) {
-                $tasks = Task::with(['users', 'createdBy', 'updatedBy']);
+                $tasks = Task::with(['users:id,name,email', 'createdBy:id,name', 'updatedBy:id,name']);
             } else {
-                $tasks = Task::with(['users', 'createdBy', 'updatedBy'])
+                $tasks = Task::with(['users:id,name,email', 'createdBy:id,name', 'updatedBy:id,name'])
                     ->whereHas('users', function ($query) {
                         $query->where('user_id', auth()->id());
                     });
@@ -46,11 +46,6 @@ class TaskController extends Controller
                     $path = imagePath('project', $row->image);
                     return '<img src="' . $path . '" width="70px" alt="image">';
                 })
-                ->addColumn('is_active', function ($row) {
-                    if (userCan('project-edit')) {
-                        return view('button', ['type' => 'is_active', 'route' => route('admin.projects.is_active', $row->id), 'row' => $row->is_active]);
-                    }
-                })
                 ->addColumn('action', function ($row) {
                     $btn = '';
                     $btn .= view('button', ['type' => 'ajax-show', 'route' => route('admin.tasks.show', $row->id), 'row' => $row]);
@@ -65,7 +60,7 @@ class TaskController extends Controller
                 ->rawColumns(['priority', 'user', 'content', 'is_active', 'action'])
                 ->make(true);
         }
-        return view('admin.project.show');
+        return view('admin.task.index');
     }
 
     /**

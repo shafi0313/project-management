@@ -1,15 +1,15 @@
 @extends('admin.layouts.app')
-@section('title', 'Designation')
+@section('title', 'Task')
 @section('content')
-    @include('admin.layouts.includes.breadcrumb', ['title' => ['', 'Designation', 'Index']])
+    @include('admin.layouts.includes.breadcrumb', ['title' => ['', 'Task', 'Index']])
 
     <div class="row">
         <div class="col-12">
             <div class="card">
                 <div class="card-body">
                     <div class="d-flex justify-content-between mb-2">
-                        <h4 class="card-title">List of Designations</h4>
-                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createModal">
+                        <h4 class="card-title">List of Tasks</h4>
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createModalTask">
                             <i class="fa-solid fa-plus"></i> Add New
                         </button>
                     </div>
@@ -24,10 +24,12 @@
             </div> <!-- end card -->
         </div><!-- end col -->
     </div><!-- end row -->
-    @can('designation-add')
-        @include('admin.designation.create')
+    @can('task-add')
+        @include('admin.task.create')
     @endcan
     @push('scripts')
+        {{-- @include('admin.layouts.includes.summer-note-with-image', ['height' => '200px'])
+        @include('admin.layouts.includes.get-user-modal-js') --}}
         <script>
             $(function() {
                 $('#data_table').DataTable({
@@ -38,7 +40,7 @@
                     // responsive: true,
                     scrollX: true,
                     scrollY: 400,
-                    ajax: "{{ route('admin.designations.index') }}",
+                    ajax: "{{ route('admin.tasks.index') }}",
                     columns: [{
                             data: 'DT_RowIndex',
                             name: 'DT_RowIndex',
@@ -54,16 +56,36 @@
                             title: 'name'
                         },
                         {
-                            data: 'is_active',
-                            name: 'is_active',
-                            title: 'Status'
+                            data: 'content',
+                            name: 'content',
+                            title: 'content'
+                        },
+                        {
+                            data: 'user',
+                            name: 'user',
+                            title: 'assigned user'
+                        },
+                        {
+                            data: 'priority',
+                            name: 'priority',
+                            title: 'priority'
+                        },
+                        {
+                            data: 'created_by.name',
+                            name: 'created_by.name',
+                            title: 'Created By'
+                        },
+                        {
+                            data: 'updated_by.name',
+                            name: 'updated_by.name',
+                            title: 'updated By'
                         },
                         {
                             data: 'action',
                             name: 'action',
                             title: 'Action',
                             className: "text-center",
-                            width: "60px",
+                            width: "100px",
                             orderable: false,
                             searchable: false,
                         },

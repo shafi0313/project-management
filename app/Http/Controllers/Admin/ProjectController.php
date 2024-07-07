@@ -20,14 +20,38 @@ class ProjectController extends Controller
         if ($error = $this->authorize('project-manage')) {
             return $error;
         }
-        
 
+        // return $projects = Project::with(['tasks','users:id,name', 'createdBy:id,name', 'updatedBy:id,name'])->get();
         if ($request->ajax()) {
-            $projects = Project::with(['users', 'createdBy', 'updatedBy']);
+            $projects = Project::with(['tasks', 'users:id,name', 'createdBy:id,name', 'updatedBy:id,name']);
             return DataTables::of($projects)
                 ->addIndexColumn()
                 ->addColumn('content', function ($row) {
                     return '<div>' . $row->content . '</div>';
+                })
+                ->addColumn('progress', function ($row) {
+                    $totalTasks = $row->tasks->count();
+                    $completedTasks = $row->tasks->where('status', 3)->count();
+
+                    if ($totalTasks > 0) {
+                        $percentage = ($completedTasks / $totalTasks) * 100;
+                    } else {
+                        $percentage = 0;
+                    }
+                    if ($percentage < 20) {
+                        $bg = 'bg-danger';
+                    } elseif ($percentage < 40) {
+                        $bg = 'bg-warning';
+                    } elseif ($percentage < 60) {
+                        $bg = 'bg-info';
+                    } elseif ($percentage < 80) {
+                        $bg = 'bg-primary';
+                    } else {
+                        $bg = 'bg-success';
+                    }
+                    return '<div class="progress" role="progressbar" aria-valuenow="' . $percentage . '" aria-valuemin="0" aria-valuemax="100">
+                                <div class="progress-bar ' . $bg . '" style="width:' . $percentage . '%">' . $percentage . '%</div>
+                            </div>';
                 })
                 ->addColumn('user', function ($row) {
                     return $row->users->map(function ($user) {
@@ -54,10 +78,59 @@ class ProjectController extends Controller
                     }
                     return $btn;
                 })
-                ->rawColumns(['user','content', 'is_active', 'action'])
+                ->rawColumns(['progress', 'user', 'content', 'is_active', 'action'])
                 ->make(true);
         }
         return view('admin.project.index');
+    }
+
+    public function task(Request $request, $projectId)
+    {
+        if ($error = $this->authorize('project-manage')) {
+            return $error;
+        }
+
+        if ($request->ajax()) {
+            if (user()->designation_id == 1) {
+                $tasks = Task::with(['users:id,name,email', 'createdBy:id,name', 'updatedBy:id,name'])->whereProjectId($projectId);
+            } else {
+                $tasks = Task::with(['users:id,name,email', 'createdBy:id,name', 'updatedBy:id,name'])->whereProjectId($projectId)
+                    ->whereHas('users', function ($query) {
+                        $query->where('user_id', auth()->id());
+                    });
+            }
+            return DataTables::of($tasks)
+                ->addIndexColumn()
+                ->addColumn('priority', function ($row) {
+                    return priority($row->priority);
+                })
+                ->addColumn('content', function ($row) {
+                    return '<div>' . $row->content . '</div>';
+                })
+                ->addColumn('user', function ($row) {
+                    return $row->users->map(function ($user) {
+                        return '<span class="badge text-bg-success">' . $user->name . '</span>';
+                    })->implode(' ');
+                })
+                ->addColumn('image', function ($row) {
+                    $path = imagePath('project', $row->image);
+                    return '<img src="' . $path . '" width="70px" alt="image">';
+                })
+                ->addColumn('action', function ($row) {
+                    $btn = '';
+                    $btn .= view('button', ['type' => 'ajax-show', 'route' => route('admin.tasks.show', $row->id), 'row' => $row]);
+                    // if (userCan('project-edit')) {
+                    //     $btn .= view('button', ['type' => 'ajax-edit', 'route' => route('admin.projects.edit', $row->id), 'row' => $row]);
+                    // }
+                    if (userCan('project-delete')) {
+                        $btn .= view('button', ['type' => 'ajax-delete', 'route' => route('admin.tasks.destroy', $row->id), 'row' => $row, 'src' => 'dt']);
+                    }
+                    return $btn;
+                })
+                ->rawColumns(['priority', 'user', 'content', 'is_active', 'action'])
+                ->make(true);
+        }
+        return view('admin.project.show');
     }
 
     function status(Project $project)
@@ -106,7 +179,7 @@ class ProjectController extends Controller
         if ($error = $this->authorize('project-show')) {
             return $error;
         }
-        $project->load(['users', 'createdBy', 'updatedBy']);
+        $project->load(['users:id,name,email', 'createdBy:id,name', 'updatedBy:id,name']);
         return view('admin.project.show', compact('project'));
     }
 

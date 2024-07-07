@@ -9,7 +9,7 @@ return [
     'priorities' => [
         'low' => 'Low',
         'medium' => 'Medium',
-        'heigh' => 'Heigh',
+        'high' => 'High',
     ],
     'projectStatus' => [
         1 => 'Ongoing',
