@@ -21,7 +21,6 @@ class ProjectController extends Controller
             return $error;
         }
 
-        // return $projects = Project::with(['tasks','users:id,name', 'createdBy:id,name', 'updatedBy:id,name'])->get();
         if ($request->ajax()) {
             $projects = Project::with(['tasks', 'users:id,name', 'createdBy:id,name', 'updatedBy:id,name']);
             return DataTables::of($projects)
