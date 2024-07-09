@@ -14,24 +14,34 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
-        $admin = User::create([
-            'name' => 'Admin',
+        $admins = [
+            [
+                'name' => 'Admin',
                 'email' => 'admin@app.com',
                 'user_name' => null,
                 'role' => 1,
                 'gender' => Gender::MALE,
+                'section_id' => 1,
+                'sub_section_id' => null,
                 'removable' => 0,
                 'password' => bcrypt('##Zxc1234'),
-        ]);
-        User::create([
-            'name' => 'User',
-                'email' => 'user@app.com',
+            ],
+            [
+                'name' => 'Admin 2',
+                'email' => 'admin2@app.com',
                 'user_name' => null,
-                'role' => 2,
+                'role' => 1,
                 'gender' => Gender::MALE,
+                'section_id' => null,
+                'sub_section_id' => 1,
                 'removable' => 0,
                 'password' => bcrypt('##Zxc1234'),
-        ]);
-        $admin->assignRole(['superadmin']);
+            ],
+        ];
+
+        foreach ($admins as $adminData) {
+            $user = User::create($adminData);
+            $user->assignRole(['superadmin']);
+        }
     }
 }

@@ -15,6 +15,12 @@ class SectionSeeder extends Seeder
     {
         $sections = [
             [
+                'name' => 'DPS',
+                'is_active' => 1,
+                //'removable' => 0,
+                'created_at' => now(),
+            ],
+            [
                 'name' => 'DDPS',
                 'is_active' => 1,
                 //'removable' => 0,
