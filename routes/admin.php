@@ -5,6 +5,7 @@ use App\Http\Controllers\MyProfileController;
 use App\Http\Controllers\Admin\AjaxController;
 use App\Http\Controllers\Admin\TaskController;
 use App\Http\Controllers\Admin\ProjectController;
+use App\Http\Controllers\Admin\SectionController;
 use App\Http\Controllers\Admin\DropZoneController;
 use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\Admin\DesignationController;
@@ -43,6 +44,9 @@ Route::resource('/admin-users', AdminUserController::class)->except(['show', 'cr
 Route::patch('/admin-users/is-active/{user}', [AdminUserController::class, 'status'])->name('admin_users.is_active');
 
 Route::resource('/my-profiles', MyProfileController::class)->only(['index', 'edit']);
+
+Route::resource('/sections', SectionController::class)->except(['show', 'create']);
+Route::patch('/sections/is-active/{section}', [SectionController::class, 'status'])->name('sections.is_active');
 
 Route::resource('/designations', DesignationController::class)->except(['show', 'create']);
 Route::patch('/designations/is-active/{designation}', [DesignationController::class, 'status'])->name('designations.is_active');

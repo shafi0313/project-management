@@ -71,6 +71,9 @@
                             <a href="{{ route('admin.designations.index') }}">@lang('Designation')</a>
                         </li>
                         <li>
+                            <a href="{{ route('admin.sections.index') }}">@lang('Section')</a>
+                        </li>
+                        <li>
                             <a href="{{ route('admin.admin-users.index') }}">@lang('Admin User')</a>
                         </li>
                     </ul>
