@@ -13,10 +13,10 @@ return new class extends Migration
     {
         Schema::create('projects', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
+            $table->string('job_name');
+            $table->longText('job_description')->nullable();
             $table->date('start_date');
             $table->date('deadline')->nullable();
-            $table->longText('content')->nullable();
             $table->tinyInteger('status')->default(1);
             $table->boolean('is_active')->default(1);
             $table->foreignId('created_by')->constrained('users')->onDelete('cascade');

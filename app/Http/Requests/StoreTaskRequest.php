@@ -23,13 +23,12 @@ class StoreTaskRequest extends FormRequest
     {
         return [
             'project_id' => ['required', 'exists:projects,id'],
-            'name'       => ['required', 'string', 'min:1', 'max:255'],
-            'start_date' => ['required', 'date'],
-            'due_date'   => ['nullable', 'date'],
-            'priority'   => ['required', 'string', 'in:low,medium,high'],
-            'status'     => ['required'],
-            'content'    => ['nullable'],
-            'is_active'  => ['nullable', 'in:0,1']
+            'task_name' => ['required', 'string', 'min:1', 'max:255'],
+            'task_description' => ['nullable'],
+            'start_date' => ['nullable', 'date'],
+            'deadline' => ['nullable', 'date'],
+            'priority' => ['nullable', 'string', 'in:low,medium,high'],
+            'status' => ['required', 'integer', 'min:1', 'max:127'],
         ];
     }
 }

@@ -26,8 +26,11 @@ class ProjectController extends Controller
             $projects = Project::with(['tasks', 'users:id,name', 'createdBy:id,name', 'updatedBy:id,name']);
             return DataTables::of($projects)
                 ->addIndexColumn()
-                ->addColumn('content', function ($row) {
-                    return '<div>' . $row->content . '</div>';
+                ->addColumn('job_description', function ($row) {
+                    return '<div>' . $row->job_description . '</div>';
+                })
+                ->addColumn('deadline', function ($row) {
+                    return $row->deadline;
                 })
                 ->addColumn('progress', function ($row) {
                     $totalTasks = $row->tasks->count();

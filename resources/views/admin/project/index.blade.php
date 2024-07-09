@@ -51,9 +51,24 @@
                             orderable: false,
                         },
                         {
-                            data: 'name',
-                            name: 'name',
-                            title: 'name'
+                            data: 'job_name',
+                            name: 'job_name',
+                            title: 'job name'
+                        },
+                        {
+                            data: 'job_description',
+                            name: 'job_description',
+                            title: 'job description'
+                        },
+                        {
+                            data: 'user',
+                            name: 'user',
+                            title: 'action'
+                        },
+                        {
+                            data: 'created_by.name',
+                            name: 'created_by.name',
+                            title: 'Assigned By'
                         },
                         {
                             data: 'progress',
@@ -61,34 +76,19 @@
                             title: 'progress'
                         },
                         {
-                            data: 'user',
-                            name: 'user',
-                            title: 'user'
+                            data: 'deadline',
+                            name: 'deadline',
+                            title: 'deadline'
                         },
                         {
-                            data: 'content',
-                            name: 'content',
-                            title: 'content'
-                        },
-                        {
-                            data: 'created_by.name',
-                            name: 'created_by.name',
-                            title: 'Created By'
-                        },
-                        {
-                            data: 'updated_by.name',
-                            name: 'updated_by.name',
-                            title: 'updated By'
-                        },
-                        {
-                            data: 'is_active',
-                            name: 'is_active',
-                            title: 'Status'
+                            data: 'status',
+                            name: 'status',
+                            title: 'status'
                         },
                         {
                             data: 'action',
                             name: 'action',
-                            title: 'Action',
+                            title: 'Functions',
                             className: "text-center",
                             width: "100px",
                             orderable: false,
