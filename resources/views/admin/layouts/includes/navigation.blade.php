@@ -74,6 +74,9 @@
                             <a href="{{ route('admin.sections.index') }}">@lang('Section')</a>
                         </li>
                         <li>
+                            <a href="{{ route('admin.sub-sections.index') }}">@lang('Sub Section')</a>
+                        </li>
+                        <li>
                             <a href="{{ route('admin.admin-users.index') }}">@lang('Admin User')</a>
                         </li>
                     </ul>

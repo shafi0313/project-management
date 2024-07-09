@@ -8,6 +8,7 @@ use App\Http\Controllers\Admin\ProjectController;
 use App\Http\Controllers\Admin\SectionController;
 use App\Http\Controllers\Admin\DropZoneController;
 use App\Http\Controllers\Admin\AdminUserController;
+use App\Http\Controllers\Admin\SubSectionController;
 use App\Http\Controllers\Admin\DesignationController;
 use App\Http\Controllers\Setting\AppDbBackupController;
 use App\Http\Controllers\Setting\Permission\RoleController;
@@ -47,6 +48,9 @@ Route::resource('/my-profiles', MyProfileController::class)->only(['index', 'edi
 
 Route::resource('/sections', SectionController::class)->except(['show', 'create']);
 Route::patch('/sections/is-active/{section}', [SectionController::class, 'status'])->name('sections.is_active');
+
+Route::resource('/sub-sections', SubSectionController::class)->except(['show', 'create']);
+Route::patch('/sub-sections/is-active/{subSection}', [SubSectionController::class, 'status'])->name('sub_sections.is_active');
 
 Route::resource('/designations', DesignationController::class)->except(['show', 'create']);
 Route::patch('/designations/is-active/{designation}', [DesignationController::class, 'status'])->name('designations.is_active');
