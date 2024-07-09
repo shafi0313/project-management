@@ -10,9 +10,23 @@
                 @csrf
                 <div class="modal-body">
                     <div class="row gy-2">
+                        <div class="col-md-12">
+                            <label for="job_name" class="form-label required">job Name </label>
+                            <input type="text" name="job_name" class="form-control" required>
+                        </div>
+                        <div class="col-md-12">
+                            <label for="job_description" class="form-label">Job description </label>
+                            <textarea name="job_description" class="form-control note_content"></textarea>
+                        </div>
                         <div class="col-md-6">
-                            <label for="name" class="form-label required">Name </label>
-                            <input type="text" name="name" class="form-control" required>
+                            <label for="name" class="form-label required">Action </label>
+                            <select name="user_id[]" class="form-select" id="user_id" required>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="name" class="form-label required">Section </label>
+                            <select name="sub_section_id[]" class="form-select" id="sub_section_id" required>
+                            </select>
                         </div>
                         <div class="col-md-3">
                             <label for="start_date" class="form-label required">start date </label>
@@ -23,11 +37,6 @@
                             <input type="date" name="deadline" class="form-control">
                         </div>
                         <div class="col-md-6">
-                            <label for="name" class="form-label required">User </label>
-                            <select name="user_id[]" class="form-select" id="user_id" required>
-                            </select>
-                        </div>
-                        <div class="col-md-6">
                             <label for="status" class="form-label required">Status </label>
                             <select name="status" class="form-select" required>
                                 <option value="">Select</option>
@@ -35,16 +44,6 @@
                                     <option value="{{ $key }}">{{ $value }}</option>
                                 @endforeach
                             </select>
-                        </div>
-                        <div class="col-md-12">
-                            <label for="content" class="form-label">content </label>
-                            <textarea name="content" class="form-control note_content"></textarea>
-                        </div>
-                        <div class="col-md-4 form-check form-switch">
-                            <label for="is_active" class="form-label status_label d-block required">Status </label>
-                            <input class="form-check-input" type="checkbox" id="is_active_input" value="1"
-                                name="is_active" checked>
-                            <label class="form-check-label" for="is_active_input" id="is_active_label">Active</label>
                         </div>
                     </div>
                 </div>

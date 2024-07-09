@@ -28,7 +28,7 @@
         @include('admin.project.create')
     @endcan
     @push('scripts')
-        @include('admin.layouts.includes.summer-note-with-image', ['height' => '200px'])
+        @include('admin.layouts.includes.summer-note-with-image', ['height' => '150px'])
         @include('admin.layouts.includes.get-user-modal-js')
         <script>
             $(function() {
@@ -61,9 +61,14 @@
                             title: 'job description'
                         },
                         {
-                            data: 'user',
-                            name: 'user',
+                            data: 'users',
+                            name: 'users',
                             title: 'action'
+                        },
+                        {
+                            data: 'sub_sections',
+                            name: 'sub_sections',
+                            title: 'Section'
                         },
                         {
                             data: 'created_by.name',
@@ -100,6 +105,32 @@
                     }
                 });
             });
+            $(document).ready(function() {
+        $('#sub_section_id').select2({
+            dropdownParent: $('.modal-body'),
+            width: '100%',
+            placeholder: 'Select...',
+            allowClear: true,
+            multiple: true,
+            ajax: {
+                url: window.location.origin + '/dashboard/select-2-ajax',
+                dataType: 'json',
+                delay: 250,
+                cache: true,
+                data: function(params) {
+                    return {
+                        q: $.trim(params.term),
+                        type: 'getSubSection',
+                    };
+                },
+                processResults: function(data) {
+                    return {
+                        results: data
+                    };
+                }
+            }
+        });
+    })
         </script>
     @endpush
 @endsection

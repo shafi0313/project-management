@@ -18,7 +18,6 @@ return new class extends Migration
             $table->date('start_date');
             $table->date('deadline')->nullable();
             $table->tinyInteger('status')->default(1);
-            $table->boolean('is_active')->default(1);
             $table->foreignId('created_by')->constrained('users')->onDelete('cascade');
             $table->foreignId('updated_by')->nullable()->constrained('users')->onDelete('cascade');
             $table->timestamps();

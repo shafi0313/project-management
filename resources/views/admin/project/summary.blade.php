@@ -30,7 +30,7 @@
                         }
                     @endphp
                     <div class="col-md-3">
-                        <label class="fw-bold">Project Progress:</label>
+                        <label class="fw-bold">Progress:</label>
                         <div class="progress" role="progressbar" aria-valuenow="{{ $percentage }}" aria-valuemin="0" aria-valuemax="100">
                             <div class="progress-bar {{ $bg }}" style="width:{{ $percentage }}%">{{ $percentage }}%</div>
                         </div>
@@ -47,8 +47,8 @@
                 </div>
                 <div class="row mt-2">
                     <div class="col-md-12">
-                        <label class="fw-bold">Content:</label><br>
-                        {!! $project->content !!}
+                        <label class="fw-bold">Job Description:</label><br>
+                        {!! $project->job_description !!}
                     </div>
                 </div>
             </div>

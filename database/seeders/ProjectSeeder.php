@@ -20,7 +20,7 @@ class ProjectSeeder extends Seeder
                 'deadline' => '2024-07-30',
                 'job_description' => 'Project 1 content',
                 'status' => 1,
-                'is_active' => 1,
+                //'is_active' => 1,
                 'created_by' => 1,
                 'created_at' => now(),
             ],
@@ -30,7 +30,7 @@ class ProjectSeeder extends Seeder
                 'deadline' => '2024-07-30',
                 'job_description' => 'Project 2 content',
                 'status' => 1,
-                'is_active' => 1,
+                //'is_active' => 1,
                 'created_by' => 1,
                 'created_at' => now(),
             ],
@@ -40,7 +40,7 @@ class ProjectSeeder extends Seeder
                 'deadline' => '2024-07-30',
                 'job_description' => 'Project 3 content',
                 'status' => 1,
-                'is_active' => 1,
+                //'is_active' => 1,
                 'created_by' => 1,
                 'created_at' => now(),
             ],
@@ -50,6 +50,11 @@ class ProjectSeeder extends Seeder
 
         Project::each(function ($project) {
             $project->users()->attach([1, 2]);
+        });
+
+        Project::each(function ($project) {
+            $project->users()->attach([1, 2]);
+            $project->subSections()->attach([1, 2, 3]);
         });
     }
 }

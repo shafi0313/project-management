@@ -28,6 +28,7 @@ class StoreProjectRequest extends FormRequest
             'deadline' => ['nullable', 'date'],
             'status' => ['required', 'integer', 'min:1', 'max:127'],
             'user_id' => ['required', 'array'],
+            'sub_section_id' => ['required', 'array'],
         ];
     }
 }

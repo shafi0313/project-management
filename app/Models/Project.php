@@ -53,6 +53,11 @@ class Project extends Model
         return $this->belongsToMany(User::class, 'project_user', 'project_id', 'user_id');
     }
 
+    public function subSections()
+    {
+        return $this->belongsToMany(SubSection::class, 'project_sub_section', 'project_id', 'sub_section_id');
+    }
+
     public function createdBy()
     {
         return $this->belongsTo(User::class, 'created_by');

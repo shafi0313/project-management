@@ -12,9 +12,9 @@ return [
         'high' => 'High',
     ],
     'projectStatus' => [
-        1 => 'Ongoing',
-        2 => 'On Hold',
-        3 => 'Finished',
+        1 => 'Pending',
+        2 => 'Ongoing',
+        3 => 'Completed',
     ],
 ];
 

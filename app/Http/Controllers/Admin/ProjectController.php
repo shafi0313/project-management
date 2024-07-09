@@ -22,14 +22,14 @@ class ProjectController extends Controller
         }
 
         if ($request->ajax()) {
-            $projects = Project::with(['tasks', 'users:id,name', 'createdBy:id,name', 'updatedBy:id,name']);
+            $projects = Project::with(['tasks', 'users:id,name', 'subSections:id,name', 'createdBy:id,name', 'updatedBy:id,name']);
             return DataTables::of($projects)
                 ->addIndexColumn()
                 ->addColumn('job_description', function ($row) {
                     return '<div>' . $row->job_description . '</div>';
                 })
                 ->addColumn('deadline', function ($row) {
-                    return $row->deadline;
+                    return bdDate($row->deadline);
                 })
                 ->addColumn('progress', function ($row) {
                     $totalTasks = $row->tasks->count();
@@ -55,20 +55,27 @@ class ProjectController extends Controller
                                 <div class="progress-bar ' . $bg . '" style="width:' . $percentage . '%">' . $percentage . '%</div>
                             </div>';
                 })
-                ->addColumn('user', function ($row) {
+                ->addColumn('users', function ($row) {
                     return $row->users->map(function ($user) {
                         return '<span class="badge text-bg-success">' . $user->name . '</span>';
                     })->implode(' ');
                 })
-                ->addColumn('image', function ($row) {
-                    $path = imagePath('project', $row->image);
-                    return '<img src="' . $path . '" width="70px" alt="image">';
+                ->addColumn('sub_sections', function ($row) {
+                    return $row->subSections->map(function ($subSection) {
+                        return '<span class="badge text-bg-primary">' . $subSection->name . '</span>';
+                    })->implode(' ');
                 })
-                ->addColumn('is_active', function ($row) {
-                    if (userCan('project-edit')) {
-                        return view('button', ['type' => 'is_active', 'route' => route('admin.projects.is_active', $row->id), 'row' => $row->is_active]);
+                ->addColumn('status', function ($row) {
+                    if ($row->status != 3 && $row->deadline < date('Y-m-d')) {
+                        return '<span class="badge text-bg-danger">Deadline Over</span>';
+                    } else {
+                        return projectStatus($row->status);
                     }
                 })
+                // ->addColumn('image', function ($row) {
+                //     $path = imagePath('project', $row->image);
+                //     return '<img src="' . $path . '" width="70px" alt="image">';
+                // })
                 ->addColumn('action', function ($row) {
                     $btn = '';
                     $btn .= view('button', ['type' => 'show', 'route' => 'admin.projects', 'row' => $row]);
@@ -80,7 +87,7 @@ class ProjectController extends Controller
                     }
                     return $btn;
                 })
-                ->rawColumns(['progress', 'user', 'content', 'is_active', 'action'])
+                ->rawColumns(['job_description', 'progress', 'users', 'sub_sections', 'status', 'action'])
                 ->make(true);
         }
         return view('admin.project.index');
@@ -106,18 +113,18 @@ class ProjectController extends Controller
                 ->addColumn('priority', function ($row) {
                     return priority($row->priority);
                 })
-                ->addColumn('content', function ($row) {
-                    return '<div>' . $row->content . '</div>';
+                ->addColumn('task_description', function ($row) {
+                    return '<div>' . $row->task_description . '</div>';
                 })
                 ->addColumn('user', function ($row) {
                     return $row->users->map(function ($user) {
                         return '<span class="badge text-bg-success">' . $user->name . '</span>';
                     })->implode(' ');
                 })
-                ->addColumn('image', function ($row) {
-                    $path = imagePath('project', $row->image);
-                    return '<img src="' . $path . '" width="70px" alt="image">';
-                })
+                // ->addColumn('image', function ($row) {
+                //     $path = imagePath('project', $row->image);
+                //     return '<img src="' . $path . '" width="70px" alt="image">';
+                // })
                 ->addColumn('action', function ($row) {
                     $btn = '';
                     $btn .= view('button', ['type' => 'ajax-show', 'route' => route('admin.tasks.show', $row->id), 'row' => $row]);
@@ -129,7 +136,7 @@ class ProjectController extends Controller
                     }
                     return $btn;
                 })
-                ->rawColumns(['priority', 'user', 'content', 'is_active', 'action'])
+                ->rawColumns(['priority', 'user', 'task_description', 'action'])
                 ->make(true);
         }
         return view('admin.project.show');

@@ -11,7 +11,7 @@
             <div class="card">
                 <div class="card-body">
                     <div class="d-flex justify-content-between mb-2">
-                        <h3 class="card-title">{{ $project->name }}</h3>
+                        <h3 class="card-title">{{ $project->job_name }}</h3>
                         {{-- <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createModal">
                             <i class="fa-solid fa-plus"></i> Add New
                         </button> --}}
@@ -141,14 +141,14 @@
                             orderable: false,
                         },
                         {
-                            data: 'name',
-                            name: 'name',
-                            title: 'name'
+                            data: 'task_name',
+                            name: 'task_name',
+                            title: 'task name'
                         },
                         {
-                            data: 'content',
-                            name: 'content',
-                            title: 'content'
+                            data: 'task_description',
+                            name: 'task_description',
+                            title: 'task description'
                         },
                         {
                             data: 'user',

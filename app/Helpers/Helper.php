@@ -1,9 +1,6 @@
 <?php
 
 use Carbon\Carbon;
-use App\Models\User;
-use App\Models\Branch;
-use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Intervention\Image\Facades\Image;
 use Illuminate\Support\Facades\File;
@@ -59,42 +56,6 @@ if (!function_exists('strPad6')) {
         }
     }
 }
-
-if (!function_exists('venQuery')) {
-    function venQuery()
-    {
-        return fn ($q) => $q->where('vendor_id', 1)->orWhere('vendor_id', user()->branch_id);
-    }
-}
-
-if (!function_exists('venId')) {
-    function venId()
-    {
-        return user()->vendor_id;
-    }
-}
-
-if (!function_exists('acType')) {
-    function acType(int $data)
-    {
-        return match ($data) {
-            1 => 'Income',
-            2 => 'Expense',
-            3 => 'Asset',
-            4 => 'Lability',
-            5 => 'Equity',
-            default => 'Unknown'
-        };
-    }
-}
-
-
-// if (!function_exists('carbon')) {
-//     function carbon($d_o_b)
-//     {
-//         return Carbon::parse($d_o_b)->diff(Carbon::now())->format('%y years, %m months');
-//     }
-// }
 
 /************************** Image **************************/
 
@@ -372,245 +333,44 @@ if (!function_exists('user')) {
     }
 }
 
-if (!function_exists('slug')) {
-    function slug($slug)
+if (!function_exists('pad6')) {
+    function pad6($number)
     {
-        return Str::slug($slug);
+        return str_pad($number, 6, '0', STR_PAD_LEFT);
     }
 }
 
-if (!function_exists('bn_slug')) {
-    function bn_slug($text)
+if (!function_exists('projectStatus')) {
+    function projectStatus($status)
     {
-        $array = [':', ',', '.', '!', '|', '।', 'ঃ', '{', '}', '[', ']', '(', ')', '৳', '%', '$', '#', '@', '*', '+', ';'];
-        $slug = strtolower(str_replace($array, '', trim($text)));
-        return str_replace(' ', '-', $slug);
-        return strtolower(preg_replace('/\s+/u', '-', trim($text)));
+        return match ((int)$status) {
+            1 => '<span class="badge bg-primary">Pending</span>',
+            1 => '<span class="badge text-light" style="background:orange">Ongoing</span>',
+            3 => '<span class="badge bg-success">Completed</span>',
+            default => 'unknown'
+        };
+    }
+}
+if (!function_exists('taskStatus')) {
+    function taskStatus($status)
+    {
+        return match ((int)$status) {
+            1 => '<span class="badge bg-warning">Ongoing</span>',
+            2 => '<span class="badge bg-secondary">On Hold</span>',
+            3 => '<span class="badge bg-success">Finished</span>',
+            default => 'unknown'
+        };
     }
 }
 
-if (!function_exists('readableSize')) {
-    function readableSize($n)
+if (!function_exists('priority')) {
+    function priority($status)
     {
-        // first strip any formatting;
-        $n = (0 + str_replace(",", "", $n));
-
-        // is this a number?
-        if (!is_numeric($n)) {
-            return $n;
-        }
-        // now filter it;
-        if ($n >= 1000000000000) {
-            return round(($n / 1000000000000), 1) . ' T';
-        } elseif ($n >= 1000000000) {
-            return round(($n / 1000000000), 1) . ' B';
-        } elseif ($n >= 1000000) {
-            return round(($n / 1000000), 1) . ' M';
-        } elseif ($n >= 1000) {
-            return round(($n / 1000), 1) . ' K';
-        }
-        return number_format($n);
-    }
-}
-
-if (!function_exists('niceFileSize')) {
-    function niceFileSize($bytes)
-    {
-        $result = '';
-        $bytes = floatval($bytes);
-        $arBytes = array(
-            0 => array(
-                "UNIT" => "TB",
-                "VALUE" => pow(1024, 4)
-            ),
-            1 => array(
-                "UNIT" => "GB",
-                "VALUE" => pow(1024, 3)
-            ),
-            2 => array(
-                "UNIT" => "MB",
-                "VALUE" => pow(1024, 2)
-            ),
-            3 => array(
-                "UNIT" => "KB",
-                "VALUE" => 1024
-            ),
-            4 => array(
-                "UNIT" => "B",
-                "VALUE" => 1
-            ),
-        );
-
-        foreach ($arBytes as $arItem) {
-            if ($bytes >= $arItem["VALUE"]) {
-                $result = $bytes / $arItem["VALUE"];
-                $result = strval(round($result, 2)) . " " . $arItem["UNIT"];
-                break;
-            }
-        }
-        return $result;
-    }
-
-    /**
-     * Converts a number to its roman presentation.
-     **/
-    if (!function_exists('numberToRoman')) {
-        function numberToRoman($num)
-        {
-            // Be sure to convert the given parameter into an integer
-            $n = intval($num);
-            $result = '';
-            // Declare a lookup array that we will use to traverse the number:
-            $lookup = array(
-                'M' => 1000, 'CM' => 900, 'D' => 500, 'CD' => 400,
-                'C' => 100, 'XC' => 90, 'L' => 50, 'XL' => 40,
-                'X' => 10, 'IX' => 9, 'V' => 5, 'IV' => 4, 'I' => 1
-            );
-            foreach ($lookup as $roman => $value) {
-                // Look for number of matches
-                $matches = intval($n / $value);
-                // Concatenate characters
-                $result .= str_repeat($roman, $matches);
-                // Substract that from the number
-                $n = $n % $value;
-            }
-            return $result;
-        }
-    };
-
-    if (!function_exists('customerType')) {
-        function customerType($data)
-        {
-            return match ($data) {
-                1 => 'Dine In Customer',
-                2 => 'Online Customer',
-                3 => 'Third Party Food Delivery Platform',
-                4 => 'Take Away',
-                default => 'Not found',
-            };
-        }
-    }
-
-    if (!function_exists('quantityUnit')) {
-        function quantityUnit($quantity, $unit, $type = null)
-        {
-            if ($unit == 'G') {
-                $quantity = $quantity / 1000;
-                $unit = 'KG';
-            } elseif ($unit == 'ML') {
-                $quantity = $quantity / 1000;
-                $unit = 'L';
-            } else {
-                $quantity = $quantity;
-                $unit = $unit;
-            }
-            return $type == 'Q' ? $quantity : $unit;
-        }
-    }
-
-    if (!function_exists('pad6')) {
-        function pad6($number)
-        {
-            return str_pad($number, 6, '0', STR_PAD_LEFT);
-        }
-    }
-
-    if (!function_exists('accountType')) {
-        function accountType($type)
-        {
-            return $type == 1 ? 'Debit' : 'Credit';
-        }
-    }
-
-    if (!function_exists('branches')) {
-        function branches()
-        {
-            return Branch::whereIs_active('1')->orderBy('name')->pluck('name', 'id')->prepend('Select Branch', '')->toArray();
-        }
-    }
-    if (!function_exists('branchName')) {
-        function branchName($branchId = '')
-        {
-            if (user()->branch_id == 1 || $branchId == '') {
-                return Branch::where('id', user()->branch_id)->first()->name;
-            } else {
-                return Branch::where('id', $branchId)->first()->name;
-            }
-        }
-    }
-
-    if (!function_exists('branchesOrBranch')) {
-        function branchesOrBranch()
-        {
-            $role_id = User::join('model_has_roles', 'users.id', '=', 'model_has_roles.model_id')->select('users.id', 'model_has_roles.role_id')->first()->role_id;
-
-            if (user()->branch_id == 1) {
-                return Branch::whereIs_active('1')->orderBy('name')->pluck('name', 'id')->prepend('Select Branch', '')->toArray();
-            } else {
-                // return User::join('branches', 'users.branch_id', '=', 'branches.id')->select('branches.id', 'branches.name')->first();
-                return User::join('branches', 'users.branch_id', '=', 'branches.id')->select('branches.id', 'branches.name')->find(user()->id);
-            }
-        }
-    }
-
-    if (!function_exists('branchQuery')) {
-        function branchQuery()
-        {
-            return fn ($q) => $q->where('branch_id', 1)->orWhere('branch_id', user()->branch_id);
-        }
-    }
-
-    if (!function_exists('projectStatus')) {
-        function projectStatus($status)
-        {
-            return match ((int)$status) {
-                1 => '<span class="badge bg-warning">Ongoing</span>',
-                2 => '<span class="badge bg-secondary">On Hold</span>',
-                3 => '<span class="badge bg-success">Finished</span>',
-                default => 'unknown'
-            };
-        }
-    }
-    if (!function_exists('taskStatus')) {
-        function taskStatus($status)
-        {
-            return match ((int)$status) {
-                1 => '<span class="badge bg-warning">Ongoing</span>',
-                2 => '<span class="badge bg-secondary">On Hold</span>',
-                3 => '<span class="badge bg-success">Finished</span>',
-                default => 'unknown'
-            };
-        }
-    }
-
-    if (!function_exists('priority')) {
-        function priority($status)
-        {
-            return match ($status) {
-                'low' => '<span class="badge bg-primary">Low</span>',
-                'medium' => '<span class="badge bg-warning">Medium</span>',
-                'high' => '<span class="badge bg-danger">Heigh</span>',
-                default => 'unknown'
-            };
-        }
-    }
-
-
-    if (!function_exists('numberNotation')) {
-        function numberNotation($number, $precision = 1)
-        {
-            $suffixes = ['', 'K', 'M', 'B', 'T'];
-            $suffixIndex = 0;
-            while ($number >= 900 && $suffixIndex < count($suffixes) - 1) {
-                $number /= 1000;
-                $suffixIndex++;
-            }
-            $formattedNumber = number_format($number, $precision);
-            if ($precision > 0) {
-                $formattedNumber = rtrim($formattedNumber, '0');
-                $formattedNumber = rtrim($formattedNumber, '.');
-            }
-            return $formattedNumber . $suffixes[$suffixIndex];
-        }
+        return match ($status) {
+            'low' => '<span class="badge bg-primary">Low</span>',
+            'medium' => '<span class="badge bg-warning">Medium</span>',
+            'high' => '<span class="badge bg-danger">Heigh</span>',
+            default => 'unknown'
+        };
     }
 }
