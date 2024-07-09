@@ -71,8 +71,8 @@
                             title: 'Section'
                         },
                         {
-                            data: 'created_by.name',
-                            name: 'created_by.name',
+                            data: 'created_by.section.name',
+                            name: 'created_by.section.name',
                             title: 'Assigned By'
                         },
                         {

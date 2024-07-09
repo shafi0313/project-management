@@ -21,8 +21,35 @@ class ProjectController extends Controller
             return $error;
         }
 
+        // return $projects = Project::with([
+        //     'tasks',
+        //     'users:id,name,section_id',
+        //     'subSections:id,name',
+        //     'createdBy:id,section_id',
+        //     'createdBy.section:id,name',
+        //     'updatedBy:id,name'
+        // ])
+        //     ->whereHas('users', function ($query) {
+        //         return $query->whereIn('section_id', [1, 2, 3, 4])
+        //             ->orWhere('sub_section_id', user()->sub_section_id);
+        //     })
+        //     // ->orWhereHas('subSections', function ($query) {
+        //     //     $query->orWhere('id', user()->sub_section_id);
+        //     // })
+        //     ->get();
         if ($request->ajax()) {
-            $projects = Project::with(['tasks', 'users:id,name', 'subSections:id,name', 'createdBy:id,name', 'updatedBy:id,name']);
+            $projects = Project::with([
+                'tasks',
+                'users:id,name,section_id',
+                'subSections:id,name',
+                'createdBy:id,section_id',
+                'createdBy.section:id,name',
+                'updatedBy:id,name'
+            ])
+                ->whereHas('users', function ($query) {
+                    return $query->whereIn('section_id', [1, 2, 3, 4])
+                        ->orWhere('sub_section_id', user()->sub_section_id);
+                });
             return DataTables::of($projects)
                 ->addIndexColumn()
                 ->addColumn('job_description', function ($row) {
@@ -142,20 +169,6 @@ class ProjectController extends Controller
         return view('admin.project.show');
     }
 
-    function status(Project $project)
-    {
-        if ($error = $this->authorize('project-edit')) {
-            return $error;
-        }
-        $project->is_active = $project->is_active  == 1 ? 0 : 1;
-        try {
-            $project->save();
-            return response()->json(['message' => 'The status has been updated'], 200);
-        } catch (\Exception $e) {
-            return response()->json(['message' => 'Oops something went wrong, Please try again.'], 500);
-        }
-    }
-
     /**
      * Store a newly created resource in storage.
      */
@@ -164,11 +177,15 @@ class ProjectController extends Controller
         if ($error = $this->authorize('project-add')) {
             return $error;
         }
+        if (actionCondition()) {
+            return response()->json(['message' => 'You can not access this action'], 500);
+        }
+
         $data = $request->validated();
         $data['created_by'] = user()->id;
-        if ($request->hasFile('image')) {
-            $data['image'] = imgWebpStore($request->image, 'project', [1920, 1080]);
-        }
+        // if ($request->hasFile('image')) {
+        //     $data['image'] = imgWebpStore($request->image, 'project', [1920, 1080]);
+        // }
 
         try {
             $project = Project::create($data);
@@ -195,11 +212,15 @@ class ProjectController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Project $project)
+    public function edit(Request $request, Project $project)
     {
         if ($error = $this->authorize('project-edit')) {
             return $error;
         }
+        if (actionCondition()) {
+            return response()->json(['message' => 'You can not access this action'], 500);
+        }
+
         if ($request->ajax()) {
             $modal = view('admin.project.edit')->with(['project' => $project])->render();
             return response()->json(['modal' => $modal], 200);
@@ -236,8 +257,11 @@ class ProjectController extends Controller
         if ($error = $this->authorize('project-delete')) {
             return $error;
         }
+        if (actionCondition()) {
+            return response()->json(['message' => 'You can not access this action'], 500);
+        }
         try {
-            imgUnlink('project', $project->image);
+            // imgUnlink('project', $project->image);
             $project->delete();
             return response()->json(['message' => 'The information has been deleted'], 200);
         } catch (\Exception $e) {

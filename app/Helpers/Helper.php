@@ -373,4 +373,11 @@ if (!function_exists('priority')) {
             default => 'unknown'
         };
     }
+
+    if (!function_exists('actionCondition')) {
+        function actionCondition()
+        {
+            return !in_array(user()->section_id, [1, user()->subSection->section_id]) || !in_array(user()->sub_section_id, [user()->sub_section_id]);
+        };
+    }
 }

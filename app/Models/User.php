@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
 /**
- * 
+ *
  *
  * @property int $id
  * @property string $name
@@ -114,5 +114,14 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    public function section()
+    {
+        return $this->belongsTo(Section::class);
+    }
+    public function subSection()
+    {
+        return $this->belongsTo(SubSection::class);
     }
 }
