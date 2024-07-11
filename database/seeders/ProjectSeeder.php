@@ -50,10 +50,6 @@ class ProjectSeeder extends Seeder
 
         Project::each(function ($project) {
             $project->users()->attach([1, 2]);
-        });
-
-        Project::each(function ($project) {
-            $project->users()->attach([1, 2]);
             $project->subSections()->attach([1, 2, 3]);
         });
     }

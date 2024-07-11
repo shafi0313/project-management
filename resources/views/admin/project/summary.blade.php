@@ -4,7 +4,7 @@
     <div class="row">
         <div class="col-md-8">
             <div class="cust_card">
-                <span class="fs-3 me-2">{{ $project->name }}</span>
+                <span class="fs-3 me-2">{{ $project->job_name }}</span>
                 {!! projectStatus($project->status) !!}
                 <hr>
                 <div class="row ">
@@ -57,15 +57,15 @@
             <div class="row">
                 <div class="cust_card">
                     <div class="col-md-12">
-                        <label class="fw-bold">Created By</label>
-                        <p>{{ $project->createdBy->name }}</p>
+                        <label class="fw-bold">Assigned By</label>
+                        <p>{{ $project->createdBy->section->name }}</p>
                     </div>
                     <div class="col-md-12">
                         <label class="fw-bold">Last Update By</label>
                         <p>{{ $project->updatedBy->name }}</p>
                     </div>
                     <div class="col-md-12">
-                        <label class="fw-bold">Project Members</label>
+                        <label class="fw-bold">Action</label>
                         <ul class="member">
                             @foreach ($project->users as $user)
                                 <li class="d-flex align-items-center">

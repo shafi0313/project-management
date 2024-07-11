@@ -20,23 +20,18 @@ class ProjectController extends Controller
         if ($error = $this->authorize('project-manage')) {
             return $error;
         }
-
-        // return $projects = Project::with([
-        //     'tasks',
-        //     'users:id,name,section_id',
-        //     'subSections:id,name',
+        // return $tasks = Task::with([
+        //     'users:id,name,email,section_id',
         //     'createdBy:id,section_id',
         //     'createdBy.section:id,name',
         //     'updatedBy:id,name'
-        // ])
-        //     ->whereHas('users', function ($query) {
-        //         return $query->whereIn('section_id', [1, 2, 3, 4])
-        //             ->orWhere('sub_section_id', user()->sub_section_id);
-        //     })
-        //     // ->orWhereHas('subSections', function ($query) {
-        //     //     $query->orWhere('id', user()->sub_section_id);
-        //     // })
-        //     ->get();
+        // ])->whereProjectId(1)
+        // ->whereHas('users', function ($query) {
+        //     return $query->whereIn('section_id', [1, 2, 3, 4])
+        //         ->orWhere('sub_section_id', user()->sub_section_id);
+        // })
+        // ->get();
+
         if ($request->ajax()) {
             $projects = Project::with([
                 'tasks',
@@ -127,14 +122,17 @@ class ProjectController extends Controller
         }
 
         if ($request->ajax()) {
-            if (user()->designation_id == 1) {
-                $tasks = Task::with(['users:id,name,email', 'createdBy:id,name', 'updatedBy:id,name'])->whereProjectId($projectId);
-            } else {
-                $tasks = Task::with(['users:id,name,email', 'createdBy:id,name', 'updatedBy:id,name'])->whereProjectId($projectId)
-                    ->whereHas('users', function ($query) {
-                        $query->where('user_id', auth()->id());
-                    });
-            }
+            $tasks = Task::with([
+                'users:id,name,email,section_id',
+                'createdBy:id,section_id',
+                'createdBy.section:id,name',
+                'updatedBy:id,name'
+            ])->whereProjectId(1)
+            ->whereHas('users', function ($query) {
+                return $query->whereIn('section_id', [1, 2, 3, 4])
+                    ->orWhere('sub_section_id', user()->sub_section_id);
+            });
+
             return DataTables::of($tasks)
                 ->addIndexColumn()
                 ->addColumn('priority', function ($row) {
@@ -205,7 +203,12 @@ class ProjectController extends Controller
         if ($error = $this->authorize('project-show')) {
             return $error;
         }
-        $project->load(['users:id,name,email', 'createdBy:id,name', 'updatedBy:id,name']);
+        $project->load([
+            'users:id,name,email,section_id',
+            'createdBy:id,section_id',
+            'createdBy.section:id,name',
+            'updatedBy:id,name'
+        ]);
         return view('admin.project.show', compact('project'));
     }
 
@@ -235,6 +238,9 @@ class ProjectController extends Controller
     {
         if ($error = $this->authorize('project-add')) {
             return $error;
+        }
+        if (actionCondition()) {
+            return response()->json(['message' => 'You can not access this action'], 500);
         }
         $data = $project->validated();
         $image = $project->image;

@@ -39,21 +39,20 @@
                 <div class="row gx-5">
                     <div class="col-md-8">
                         <div class="row">
-                            <p class="fs-4">Project Name: <b>{{ $task->project->name }}</b></p>
-                            <p class="fs-4">Task Name: <b>{{ $task->name }}</b></p>
+                            <p class="fs-4">Project Name: <b>{{ $task->project->job_name }}</b></p>
+                            <p class="fs-4">Task Name: <b>{{ $task->task_name }}</b></p>
 
                             <div class="col-md-12">
                                 <p class="border-bottom">Description:</p>
-                                <p>{!! $task->content !!}</p>
+                                <p>{!! $task->task_description !!}</p>
                             </div>
                             <div class="col-md-12">
                                 <p class="border-bottom">Attachments:</p>
-                                <p>{!! $task->content !!}</p>
                             </div>
                         </div>
                     </div>
                     <div class="col-md-4">
-                        <h4>Assignee</h4>
+                        <h4>Action</h4>
                         <ul class="member">
                             @foreach ($task->users as $user)
                                 <li class="d-flex align-items-center">
@@ -81,7 +80,7 @@
                         <div class="info">
                             <table>
                                 <tr>
-                                    <td>Created By:</td>
+                                    <td>Assigned By:</td>
                                     <th>{{ $task->createdBy->name }}</th>
                                 </tr>
                                 <tr>

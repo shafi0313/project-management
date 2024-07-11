@@ -153,7 +153,7 @@
                         {
                             data: 'user',
                             name: 'user',
-                            title: 'assigned user'
+                            title: 'Action'
                         },
                         {
                             data: 'priority',
@@ -161,9 +161,9 @@
                             title: 'priority'
                         },
                         {
-                            data: 'created_by.name',
-                            name: 'created_by.name',
-                            title: 'Created By'
+                            data: 'created_by.section.name',
+                            name: 'created_by.section.name',
+                            title: 'Assigned By'
                         },
                         {
                             data: 'updated_by.name',
