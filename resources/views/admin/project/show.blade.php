@@ -4,7 +4,7 @@
     @include('admin.layouts.includes.breadcrumb', ['title' => ['', 'Project', 'Index']])
 
     <script src="https://unpkg.com/dropzone@5/dist/min/dropzone.min.js"></script>
-<link rel="stylesheet" href="https://unpkg.com/dropzone@5/dist/min/dropzone.min.css" type="text/css" />
+    <link rel="stylesheet" href="https://unpkg.com/dropzone@5/dist/min/dropzone.min.css" type="text/css" />
 
     <div class="row">
         <div class="col-12">
@@ -59,7 +59,7 @@
 
     @include('admin.task.create', ['project_id' => $project->id])
     @push('scripts')
-        @include('admin.layouts.includes.summer-note-with-image',['height'=>'150'])
+        @include('admin.layouts.includes.summer-note-with-image', ['height' => '150'])
         @include('admin.layouts.includes.get-user-modal-js')
         <script>
             $(function() {
@@ -185,6 +185,61 @@
                     }
                 });
             });
+            $(function() {
+                var projectId = '{{ $project->id }}';
+                $('#file_table').DataTable({
+                    processing: true,
+                    serverSide: true,
+                    deferRender: true,
+                    ordering: true,
+                    // responsive: true,
+                    // scrollX: true,
+                    // scrollY: 400,
+                    ajax: {
+                        url: "{{ route('admin.project_files.index') }}",
+                        data: function(d) {
+                            d.project_id = projectId;
+                        }
+                    },
+                    columns: [{
+                            data: 'DT_RowIndex',
+                            name: 'DT_RowIndex',
+                            title: 'SL',
+                            className: "text-center",
+                            width: "17px",
+                            searchable: false,
+                            orderable: false,
+                        },
+                        {
+                            data: 'file',
+                            name: 'file',
+                            title: 'file name'
+                        },
+                        {
+                            data: 'download',
+                            name: 'download',
+                            title: 'download'
+                        },
+                        {
+                            data: 'size',
+                            name: 'size',
+                            title: 'size'
+                        },
+                        {
+                            data: 'action',
+                            name: 'action',
+                            title: 'Functions',
+                            className: "text-center",
+                            width: "100px",
+                            orderable: false,
+                            searchable: false,
+                        },
+                    ],
+                    scroller: {
+                        loadingIndicator: true
+                    }
+                });
+            });
 
             $(document).ready(function() {
                 $('#user_id').select2({
@@ -241,6 +296,5 @@
                 });
             })
         </script>
-
     @endpush
 @endsection

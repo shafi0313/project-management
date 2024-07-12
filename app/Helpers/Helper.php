@@ -380,4 +380,29 @@ if (!function_exists('priority')) {
             return !in_array(user()->section_id, [1, user()->subSection->section_id]) || !in_array(user()->sub_section_id, [user()->sub_section_id]);
         };
     }
+
+    if (! function_exists('readableSize')) {
+        function readableSize($n)
+        {
+            // first strip any formatting;
+            $n = (0 + str_replace(',', '', $n));
+
+            // is this a number?
+            if (! is_numeric($n)) {
+                return $n;
+            }
+            // now filter it;
+            if ($n >= 1000000000000) {
+                return round(($n / 1000000000000), 1).' TB';
+            } elseif ($n >= 1000000000) {
+                return round(($n / 1000000000), 1).' GB';
+            } elseif ($n >= 1000000) {
+                return round(($n / 1000000), 1).' MB';
+            } elseif ($n >= 1000) {
+                return round(($n / 1000), 1).' KB';
+            }
+
+            return number_format($n);
+        }
+    }
 }

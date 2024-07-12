@@ -10,6 +10,7 @@ use App\Http\Controllers\Admin\DropZoneController;
 use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\Admin\SubSectionController;
 use App\Http\Controllers\Admin\DesignationController;
+use App\Http\Controllers\Admin\ProjectFileController;
 use App\Http\Controllers\Setting\AppDbBackupController;
 use App\Http\Controllers\Setting\Permission\RoleController;
 use App\Http\Controllers\Setting\Permission\PermissionController;
@@ -58,11 +59,16 @@ Route::patch('/designations/is-active/{designation}', [DesignationController::cl
 Route::resource('/projects', ProjectController::class)->except(['create']);
 Route::get('/project/tasks/{projectId}', [ProjectController::class, 'task'])->name('projects.tasks');
 Route::patch('/projects/is-active/{project}', [ProjectController::class, 'status'])->name('projects.is_active');
+// Route::resource('/project-files', ProjectFileController::class)->except(['index', 'create']);
 
 Route::resource('/tasks', TaskController::class)->except(['create']);
-Route::resource('/dropzone', DropZoneController::class)->except(['index', 'create']);
+// Route::resource('/dropzone', DropZoneController::class)->except(['index', 'create']);
 
-Route::controller(DropZoneController::class)->prefix('dropzone')->name('dropzone.')->group(function () {
+
+
+Route::controller(ProjectFileController::class)->prefix('project-files')->name('project_files.')->group(function () {
+    Route::get('/index', 'index')->name('index');
     Route::post('/store', 'store')->name('store');
     Route::delete('/destroy', 'destroy')->name('destroy');
+    Route::delete('/delete/{id}', 'delete')->name('delete');
 });
