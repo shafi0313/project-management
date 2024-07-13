@@ -20,17 +20,6 @@ class ProjectController extends Controller
         if ($error = $this->authorize('project-manage')) {
             return $error;
         }
-        // return $tasks = Task::with([
-        //     'users:id,name,email,section_id',
-        //     'createdBy:id,section_id',
-        //     'createdBy.section:id,name',
-        //     'updatedBy:id,name'
-        // ])->whereProjectId(1)
-        // ->whereHas('users', function ($query) {
-        //     return $query->whereIn('section_id', [1, 2, 3, 4])
-        //         ->orWhere('sub_section_id', user()->sub_section_id);
-        // })
-        // ->get();
 
         if ($request->ajax()) {
             $projects = Project::with([

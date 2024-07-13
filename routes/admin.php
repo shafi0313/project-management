@@ -6,8 +6,8 @@ use App\Http\Controllers\Admin\AjaxController;
 use App\Http\Controllers\Admin\TaskController;
 use App\Http\Controllers\Admin\ProjectController;
 use App\Http\Controllers\Admin\SectionController;
-use App\Http\Controllers\Admin\DropZoneController;
 use App\Http\Controllers\Admin\AdminUserController;
+use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\SubSectionController;
 use App\Http\Controllers\Admin\DesignationController;
 use App\Http\Controllers\Admin\ProjectFileController;
@@ -15,9 +15,8 @@ use App\Http\Controllers\Setting\AppDbBackupController;
 use App\Http\Controllers\Setting\Permission\RoleController;
 use App\Http\Controllers\Setting\Permission\PermissionController;
 
-Route::get('/', function () {
-    return view('admin.dashboard');
-})->name('dashboard');
+Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
+Route::get('/project', [DashboardController::class, 'project'])->name('dashboard.projects');
 
 
 // Role & Permission
