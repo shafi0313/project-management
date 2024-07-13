@@ -105,7 +105,6 @@ class TaskController extends Controller
      */
     public function show(Request $request, Task $task)
     {
-        // return $task;
         if ($error = $this->authorize('task-show')) {
             return $error;
         }

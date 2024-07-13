@@ -9,7 +9,7 @@
     <meta content="Soft Giant BD" name="author" />
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <!-- App favicon -->
-    <link rel="shortcut icon" href="{{ asset('backend/images/favicon.ico') }}">
+    <link rel="shortcut icon" href="{{ asset('uploads/images/logo/navy_fav.png') }}">
 
     <!-- Theme Config Js -->
     <script src="{{ asset('backend/js/config.js') }}"></script>
