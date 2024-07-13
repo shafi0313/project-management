@@ -21,14 +21,16 @@ class TaskController extends Controller
         }
 
         if ($request->ajax()) {
-            if (user()->designation_id == 1) {
-                $tasks = Task::with(['users:id,name,email', 'createdBy:id,name', 'updatedBy:id,name']);
-            } else {
-                $tasks = Task::with(['users:id,name,email', 'createdBy:id,name', 'updatedBy:id,name'])
-                    ->whereHas('users', function ($query) {
-                        $query->where('user_id', auth()->id());
-                    });
-            }
+            $tasks = Task::with([
+                'users:id,name,email,section_id',
+                'createdBy:id,section_id',
+                'createdBy.section:id,name',
+                'updatedBy:id,name'
+            ])->whereProjectId(1)
+            ->whereHas('users', function ($query) {
+                return $query->whereIn('section_id', [1, 2, 3, 4])
+                    ->orWhere('sub_section_id', user()->sub_section_id);
+            });
             return DataTables::of($tasks)
                 ->addIndexColumn()
                 ->addColumn('priority', function ($row) {
@@ -78,6 +80,9 @@ class TaskController extends Controller
     {
         if ($error = $this->authorize('task-add')) {
             return $error;
+        }
+        if (actionCondition()) {
+            return response()->json(['message' => 'You can not access this action'], 500);
         }
         $data = $request->validated();
         $data['created_by'] = user()->id;
@@ -142,6 +147,9 @@ class TaskController extends Controller
     {
         if ($error = $this->authorize('task-delete')) {
             return $error;
+        }
+        if (actionCondition()) {
+            return response()->json(['message' => 'You can not access this action'], 500);
         }
         try {
             // imgUnlink('project', $project->image);

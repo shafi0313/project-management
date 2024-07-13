@@ -38,8 +38,8 @@
                     deferRender: true,
                     ordering: true,
                     // responsive: true,
-                    scrollX: true,
-                    scrollY: 400,
+                    // scrollX: true,
+                    // scrollY: 400,
                     ajax: "{{ route('admin.tasks.index') }}",
                     columns: [{
                             data: 'DT_RowIndex',
@@ -51,19 +51,19 @@
                             orderable: false,
                         },
                         {
-                            data: 'name',
-                            name: 'name',
-                            title: 'name'
+                            data: 'task_name',
+                            name: 'task_name',
+                            title: 'task name'
                         },
                         {
-                            data: 'content',
-                            name: 'content',
-                            title: 'content'
+                            data: 'task_description',
+                            name: 'task_description',
+                            title: 'task description'
                         },
                         {
                             data: 'user',
                             name: 'user',
-                            title: 'assigned user'
+                            title: 'Assigned to'
                         },
                         {
                             data: 'priority',
@@ -71,9 +71,14 @@
                             title: 'priority'
                         },
                         {
-                            data: 'created_by.name',
-                            name: 'created_by.name',
-                            title: 'Created By'
+                            data: 'deadline',
+                            name: 'deadline',
+                            title: 'deadline'
+                        },
+                        {
+                            data: 'created_by.section.name',
+                            name: 'created_by.section.name',
+                            title: 'Assigned By'
                         },
                         {
                             data: 'updated_by.name',
@@ -95,6 +100,34 @@
                     }
                 });
             });
+        </script>
+        <script>
+            $(document).ready(function() {
+                $('#project_id').select2({
+                    dropdownParent: $('.modal-body'),
+                    width: '100%',
+                    placeholder: 'Select...',
+                    allowClear: true,
+                    multiple: true,
+                    ajax: {
+                        url: window.location.origin + '/dashboard/select-2-ajax',
+                        dataType: 'json',
+                        delay: 250,
+                        cache: true,
+                        data: function(params) {
+                            return {
+                                q: $.trim(params.term),
+                                type: 'getProject',
+                            };
+                        },
+                        processResults: function(data) {
+                            return {
+                                results: data
+                            };
+                        }
+                    }
+                });
+            })
         </script>
     @endpush
 @endsection
