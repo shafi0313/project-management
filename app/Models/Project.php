@@ -2,13 +2,11 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 /**
- *
- *
  * @property int $id
  * @property string $name
  * @property string $start_date
@@ -19,6 +17,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property \Illuminate\Support\Carbon|null $deleted_at
+ *
  * @method static \Database\Factories\ProjectFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder|Project newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Project newQuery()
@@ -36,6 +35,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
  * @method static \Illuminate\Database\Eloquent\Builder|Project whereUpdatedBy($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Project withTrashed()
  * @method static \Illuminate\Database\Eloquent\Builder|Project withoutTrashed()
+ *
  * @mixin \Eloquent
  */
 class Project extends Model
@@ -48,6 +48,7 @@ class Project extends Model
     {
         return $this->hasMany(Task::class);
     }
+
     public function users()
     {
         return $this->belongsToMany(User::class, 'project_user', 'project_id', 'user_id');

@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Controller;
+use App\Http\Requests\StoreSubSectionRequest;
+use App\Http\Requests\UpdateSubSectionRequest;
 use App\Models\Section;
 use App\Models\SubSection;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
 use Yajra\DataTables\Facades\DataTables;
-use App\Http\Requests\StoreSubSectionRequest;
-use App\Http\Requests\UpdateSubSectionRequest;
 
 class SubSectionController extends Controller
 {
@@ -26,6 +26,7 @@ class SubSectionController extends Controller
                 ->selectRaw('sub_sections.id as id, sub_sections.name as name, sub_sections.is_active as is_active, sections.id as section_id, sections.name as section_name')
                 ->orderBy('sections.name')
                 ->orderBy('sub_sections.name');
+
             return DataTables::of($subSections)
                 ->addIndexColumn()
                 ->addColumn('is_active', function ($row) {
@@ -41,23 +42,26 @@ class SubSectionController extends Controller
                     if (userCan('sub-section-delete')) {
                         $btn .= view('button', ['type' => 'ajax-delete', 'route' => route('admin.sub-sections.destroy', $row->id), 'row' => $row, 'src' => 'dt']);
                     }
+
                     return $btn;
                 })
                 ->rawColumns(['is_active', 'action'])
                 ->make(true);
         }
         $sections = Section::where('is_active', 1)->get();
+
         return view('admin.sub-section.index', compact('sections'));
     }
 
-    function status(SubSection $subSection)
+    public function status(SubSection $subSection)
     {
         if ($error = $this->authorize('sub-section-edit')) {
             return $error;
         }
-        $subSection->is_active = $subSection->is_active  == 1 ? 0 : 1;
+        $subSection->is_active = $subSection->is_active == 1 ? 0 : 1;
         try {
             $subSection->save();
+
             return response()->json(['message' => 'The status has been updated'], 200);
         } catch (\Exception $e) {
             return response()->json(['message' => 'Oops something went wrong, Please try again.'], 500);
@@ -76,6 +80,7 @@ class SubSectionController extends Controller
 
         try {
             SubSection::create($data);
+
             return response()->json(['message' => 'The information has been inserted'], 200);
         } catch (\Exception $e) {
             return response()->json(['message' => 'Oops something went wrong, Please try again.'], 500);
@@ -93,8 +98,10 @@ class SubSectionController extends Controller
         if ($request->ajax()) {
             $sections = Section::where('is_active', 1)->get();
             $modal = view('admin.sub-section.edit')->with(['subSection' => $subSection, 'sections' => $sections])->render();
+
             return response()->json(['modal' => $modal], 200);
         }
+
         return abort(500);
     }
 
@@ -110,6 +117,7 @@ class SubSectionController extends Controller
 
         try {
             $subSection->update($data);
+
             return response()->json(['message' => 'The information has been updated'], 200);
         } catch (\Exception $e) {
             return response()->json(['message' => 'Oops something went wrong, Please try again'], 500);
@@ -126,6 +134,7 @@ class SubSectionController extends Controller
         }
         try {
             $subSection->delete();
+
             return response()->json(['message' => 'The information has been deleted'], 200);
         } catch (\Exception $e) {
             return response()->json(['message' => 'Oops something went wrong, Please try again'], 500);

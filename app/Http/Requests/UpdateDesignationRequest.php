@@ -23,7 +23,7 @@ class UpdateDesignationRequest extends FormRequest
     {
         return [
             'name' => ['required', 'string', 'min:1', 'max:80'],
-            'is_active' => ['nullable', 'in:0,1']
+            'is_active' => ['nullable', 'in:0,1'],
         ];
     }
 }

@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers\Admin;
 
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 
 class DropZoneController extends Controller
@@ -16,7 +16,7 @@ class DropZoneController extends Controller
 
         if ($request->file('file')) {
             $file = $request->file('file');
-            $filename = time() . '-' . $file->getClientOriginalName();
+            $filename = time().'-'.$file->getClientOriginalName();
             $file->move(public_path('uploads'), $filename);
 
             return response()->json(['filename' => $filename]);
@@ -28,10 +28,11 @@ class DropZoneController extends Controller
     public function destroy(Request $request)
     {
         $filename = $request->get('filename');
-        $path = public_path('uploads/' . $filename);
+        $path = public_path('uploads/'.$filename);
 
         if (File::exists($path)) {
             File::delete($path);
+
             return response()->json(['success' => true, 'message' => 'File deleted successfully']);
         }
 

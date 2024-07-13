@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use RealRashid\SweetAlert\Facades\Alert;
 
-
 abstract class Controller
 {
     protected function authorize(
@@ -13,6 +12,7 @@ abstract class Controller
     ) {
         if (! user()->can($permission)) {
             Alert::error('Error', $error_message);
+
             return redirect()->back();
             // return redirect()->back()->withInput()->withErrors($error_message);
         }

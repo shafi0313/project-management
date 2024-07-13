@@ -2,19 +2,21 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Task extends Model
 {
     use HasFactory, SoftDeletes;
+
     protected $guarded = ['id'];
 
     public function project()
     {
         return $this->belongsTo(Project::class);
     }
+
     public function users()
     {
         return $this->belongsToMany(User::class, 'task_user', 'task_id', 'user_id');

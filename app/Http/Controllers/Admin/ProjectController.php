@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Models\Task;
-use App\Models\Project;
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use Yajra\DataTables\Facades\DataTables;
 use App\Http\Requests\StoreProjectRequest;
 use App\Http\Requests\UpdateProjectRequest;
+use App\Models\Project;
+use App\Models\Task;
+use Illuminate\Http\Request;
+use Yajra\DataTables\Facades\DataTables;
 
 class ProjectController extends Controller
 {
@@ -28,16 +28,17 @@ class ProjectController extends Controller
                 'subSections:id,name',
                 'createdBy:id,section_id',
                 'createdBy.section:id,name',
-                'updatedBy:id,name'
+                'updatedBy:id,name',
             ])
                 ->whereHas('users', function ($query) {
                     return $query->whereIn('section_id', [1, 2, 3, 4])
                         ->orWhere('sub_section_id', user()->sub_section_id);
                 });
+
             return DataTables::of($projects)
                 ->addIndexColumn()
                 ->addColumn('job_description', function ($row) {
-                    return '<div>' . $row->job_description . '</div>';
+                    return '<div>'.$row->job_description.'</div>';
                 })
                 ->addColumn('deadline', function ($row) {
                     return bdDate($row->deadline);
@@ -62,18 +63,19 @@ class ProjectController extends Controller
                     } else {
                         $bg = 'bg-success';
                     }
-                    return '<div class="progress" role="progressbar" aria-valuenow="' . $percentage . '" aria-valuemin="0" aria-valuemax="100">
-                                <div class="progress-bar ' . $bg . '" style="width:' . $percentage . '%">' . $percentage . '%</div>
+
+                    return '<div class="progress" role="progressbar" aria-valuenow="'.$percentage.'" aria-valuemin="0" aria-valuemax="100">
+                                <div class="progress-bar '.$bg.'" style="width:'.$percentage.'%">'.$percentage.'%</div>
                             </div>';
                 })
                 ->addColumn('users', function ($row) {
                     return $row->users->map(function ($user) {
-                        return '<span class="badge text-bg-success">' . $user->name . '</span>';
+                        return '<span class="badge text-bg-success">'.$user->name.'</span>';
                     })->implode(' ');
                 })
                 ->addColumn('sub_sections', function ($row) {
                     return $row->subSections->map(function ($subSection) {
-                        return '<span class="badge text-bg-primary">' . $subSection->name . '</span>';
+                        return '<span class="badge text-bg-primary">'.$subSection->name.'</span>';
                     })->implode(' ');
                 })
                 ->addColumn('status', function ($row) {
@@ -96,11 +98,13 @@ class ProjectController extends Controller
                     if (userCan('project-delete')) {
                         $btn .= view('button', ['type' => 'ajax-delete', 'route' => route('admin.projects.destroy', $row->id), 'row' => $row, 'src' => 'dt']);
                     }
+
                     return $btn;
                 })
                 ->rawColumns(['job_description', 'progress', 'users', 'sub_sections', 'status', 'action'])
                 ->make(true);
         }
+
         return view('admin.project.index');
     }
 
@@ -115,12 +119,12 @@ class ProjectController extends Controller
                 'users:id,name,email,section_id',
                 'createdBy:id,section_id',
                 'createdBy.section:id,name',
-                'updatedBy:id,name'
+                'updatedBy:id,name',
             ])->whereProjectId(1)
-            ->whereHas('users', function ($query) {
-                return $query->whereIn('section_id', [1, 2, 3, 4])
-                    ->orWhere('sub_section_id', user()->sub_section_id);
-            });
+                ->whereHas('users', function ($query) {
+                    return $query->whereIn('section_id', [1, 2, 3, 4])
+                        ->orWhere('sub_section_id', user()->sub_section_id);
+                });
 
             return DataTables::of($tasks)
                 ->addIndexColumn()
@@ -128,11 +132,11 @@ class ProjectController extends Controller
                     return priority($row->priority);
                 })
                 ->addColumn('task_description', function ($row) {
-                    return '<div>' . $row->task_description . '</div>';
+                    return '<div>'.$row->task_description.'</div>';
                 })
                 ->addColumn('user', function ($row) {
                     return $row->users->map(function ($user) {
-                        return '<span class="badge text-bg-success">' . $user->name . '</span>';
+                        return '<span class="badge text-bg-success">'.$user->name.'</span>';
                     })->implode(' ');
                 })
                 // ->addColumn('image', function ($row) {
@@ -148,11 +152,13 @@ class ProjectController extends Controller
                     if (userCan('project-delete')) {
                         $btn .= view('button', ['type' => 'ajax-delete', 'route' => route('admin.tasks.destroy', $row->id), 'row' => $row, 'src' => 'dt']);
                     }
+
                     return $btn;
                 })
                 ->rawColumns(['priority', 'user', 'task_description', 'action'])
                 ->make(true);
         }
+
         return view('admin.project.show');
     }
 
@@ -177,6 +183,7 @@ class ProjectController extends Controller
         try {
             $project = Project::create($data);
             $project->users()->sync($request->user_id);
+
             return response()->json(['message' => 'The information has been inserted'], 200);
         } catch (\Exception $e) {
             // return response()->json(['message' => $e->getMessage()], 500);
@@ -196,8 +203,9 @@ class ProjectController extends Controller
             'users:id,name,email,section_id',
             'createdBy:id,section_id',
             'createdBy.section:id,name',
-            'updatedBy:id,name'
+            'updatedBy:id,name',
         ]);
+
         return view('admin.project.show', compact('project'));
     }
 
@@ -215,8 +223,10 @@ class ProjectController extends Controller
 
         if ($request->ajax()) {
             $modal = view('admin.project.edit')->with(['project' => $project])->render();
+
             return response()->json(['modal' => $modal], 200);
         }
+
         return abort(500);
     }
 
@@ -238,6 +248,7 @@ class ProjectController extends Controller
         }
         try {
             $project->update($data);
+
             return response()->json(['message' => 'The information has been updated'], 200);
         } catch (\Exception $e) {
             return response()->json(['message' => 'Oops something went wrong, Please try again'], 500);
@@ -258,6 +269,7 @@ class ProjectController extends Controller
         try {
             // imgUnlink('project', $project->image);
             $project->delete();
+
             return response()->json(['message' => 'The information has been deleted'], 200);
         } catch (\Exception $e) {
             return response()->json(['message' => 'Oops something went wrong, Please try again'], 500);

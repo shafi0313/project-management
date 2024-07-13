@@ -2,15 +2,15 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Models\User;
-use Illuminate\Http\Request;
-use Spatie\Permission\Models\Role;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Hash;
-use Yajra\DataTables\Facades\DataTables;
 use App\Http\Requests\StoreAdminUserRequest;
 use App\Http\Requests\UpdateAdminUserRequest;
 use App\Models\Designation;
+use App\Models\User;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
+use Spatie\Permission\Models\Role;
+use Yajra\DataTables\Facades\DataTables;
 
 class AdminUserController extends Controller
 {
@@ -22,6 +22,7 @@ class AdminUserController extends Controller
 
         if ($request->ajax()) {
             $admin_users = User::whereIn('role', [1]);
+
             return DataTables::of($admin_users)
                 ->addIndexColumn()
                 ->addColumn('gender', function ($row) {
@@ -32,7 +33,8 @@ class AdminUserController extends Controller
                 })
                 ->addColumn('image', function ($row) {
                     $path = imagePath('user', $row->image);
-                    return '<img src="' . $path . '" width="70px" alt="image">';
+
+                    return '<img src="'.$path.'" width="70px" alt="image">';
                 })
                 ->addColumn('is_active', function ($row) {
                     if (userCan('admin-user-edit')) {
@@ -47,6 +49,7 @@ class AdminUserController extends Controller
                     if (userCan('admin-user-delete')) {
                         $btn .= view('button', ['type' => 'ajax-delete', 'route' => route('admin.admin-users.destroy', $row->id), 'row' => $row, 'src' => 'dt']);
                     }
+
                     return $btn;
                 })
                 ->rawColumns(['image', 'is_active', 'action'])
@@ -55,23 +58,24 @@ class AdminUserController extends Controller
         // $roles = Role::all();
         $data['genders'] = config('datum.gender');
         $data['designations'] = Designation::where('is_active', 1)->get();
+
         return view('admin.user.admin.index', $data);
     }
 
-    function status(User $user)
+    public function status(User $user)
     {
         if ($error = $this->authorize('admin-user-edit')) {
             return $error;
         }
-        $user->is_active = $user->is_active  == 1 ? 0 : 1;
+        $user->is_active = $user->is_active == 1 ? 0 : 1;
         try {
             $user->save();
+
             return response()->json(['message' => 'The status has been updated'], 200);
         } catch (\Exception $e) {
             return response()->json(['message' => 'Oops something went wrong, Please try again.'], 500);
         }
     }
-
 
     public function store(StoreAdminUserRequest $request)
     {
@@ -87,6 +91,7 @@ class AdminUserController extends Controller
         }
         try {
             $admin_user = User::create($data);
+
             // $admin_user->assignRole($request->role);
             return response()->json(['message' => 'The information has been inserted'], 200);
         } catch (\Exception $e) {
@@ -104,8 +109,10 @@ class AdminUserController extends Controller
             $genders = config('var.genders');
             $designations = Designation::where('is_active', 1)->get();
             $modal = view('admin.user.admin.edit')->with(['admin_user' => $admin_user, 'roles' => $roles, 'genders' => $genders, 'designations' => $designations])->render();
+
             return response()->json(['modal' => $modal], 200);
         }
+
         return abort(500);
     }
 
@@ -116,7 +123,7 @@ class AdminUserController extends Controller
         }
         $data = $adminRequest->validated();
         $data['created_by'] = user()->id;
-        if ($request->password && !Hash::check($request->old_password, $admin_user->password)) {
+        if ($request->password && ! Hash::check($request->old_password, $admin_user->password)) {
             return response()->json(['message' => "Old Password Doesn't match!"], 500);
         }
         if (isset($request->password)) {
@@ -128,6 +135,7 @@ class AdminUserController extends Controller
         }
         try {
             $admin_user->update($data);
+
             // if($request->role){
             //     ModelHasRole::whereModel_id($admin_user->id)->update(['role_id'=>Role::whereName($request->role)->first()->id]);
             // }
@@ -145,6 +153,7 @@ class AdminUserController extends Controller
         try {
             imgUnlink('brand', $admin_user->image);
             $admin_user->delete();
+
             return response()->json(['message' => 'The information has been deleted'], 200);
         } catch (\Exception $e) {
             return response()->json(['message' => 'Oops something went wrong, Please try again'], 500);

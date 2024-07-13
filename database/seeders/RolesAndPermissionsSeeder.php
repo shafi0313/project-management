@@ -63,7 +63,7 @@ class RolesAndPermissionsSeeder extends Seeder
             ],
             'app-backup' => [
                 'app-backup-manage',
-                'app-backup-delete'
+                'app-backup-delete',
             ],
             'designation' => [
                 'designation-manage',

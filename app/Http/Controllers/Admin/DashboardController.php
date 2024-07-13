@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Controller;
 use App\Models\Project;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
 use Yajra\DataTables\Facades\DataTables;
 
 class DashboardController extends Controller
@@ -14,6 +14,7 @@ class DashboardController extends Controller
         if ($error = $this->authorize('project-manage')) {
             return $error;
         }
+
         return view('admin.dashboard');
     }
 
@@ -35,16 +36,17 @@ class DashboardController extends Controller
                 'subSections:id,name',
                 'createdBy:id,section_id',
                 'createdBy.section:id,name',
-                'updatedBy:id,name'
+                'updatedBy:id,name',
             ])
                 ->whereHas('users', function ($query) use ($sectionId) {
                     return $query->whereIn('section_id', $sectionId);
                     // ->orWhere('sub_section_id', user()->sub_section_id);
                 });
+
             return DataTables::of($projects)
                 ->addIndexColumn()
                 ->addColumn('job_description', function ($row) {
-                    return '<div>' . $row->job_description . '</div>';
+                    return '<div>'.$row->job_description.'</div>';
                 })
                 ->addColumn('deadline', function ($row) {
                     return bdDate($row->deadline);
@@ -69,18 +71,19 @@ class DashboardController extends Controller
                     } else {
                         $bg = 'bg-success';
                     }
-                    return '<div class="progress" role="progressbar" aria-valuenow="' . $percentage . '" aria-valuemin="0" aria-valuemax="100">
-                                <div class="progress-bar ' . $bg . '" style="width:' . $percentage . '%">' . $percentage . '%</div>
+
+                    return '<div class="progress" role="progressbar" aria-valuenow="'.$percentage.'" aria-valuemin="0" aria-valuemax="100">
+                                <div class="progress-bar '.$bg.'" style="width:'.$percentage.'%">'.$percentage.'%</div>
                             </div>';
                 })
                 ->addColumn('users', function ($row) {
                     return $row->users->map(function ($user) {
-                        return '<span class="badge text-bg-success">' . $user->name . '</span>';
+                        return '<span class="badge text-bg-success">'.$user->name.'</span>';
                     })->implode(' ');
                 })
                 ->addColumn('sub_sections', function ($row) {
                     return $row->subSections->map(function ($subSection) {
-                        return '<span class="badge text-bg-primary">' . $subSection->name . '</span>';
+                        return '<span class="badge text-bg-primary">'.$subSection->name.'</span>';
                     })->implode(' ');
                 })
                 ->addColumn('status', function ($row) {
@@ -99,11 +102,13 @@ class DashboardController extends Controller
                     if (userCan('project-delete')) {
                         $btn .= view('button', ['type' => 'ajax-delete', 'route' => route('admin.projects.destroy', $row->id), 'row' => $row, 'src' => 'dt']);
                     }
+
                     return $btn;
                 })
                 ->rawColumns(['job_description', 'progress', 'users', 'sub_sections', 'status', 'action'])
                 ->make(true);
         }
+
         return view('admin.dashboard');
     }
 }

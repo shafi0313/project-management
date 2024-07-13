@@ -1,23 +1,22 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\MyProfileController;
-use App\Http\Controllers\Admin\AjaxController;
-use App\Http\Controllers\Admin\TaskController;
-use App\Http\Controllers\Admin\ProjectController;
-use App\Http\Controllers\Admin\SectionController;
 use App\Http\Controllers\Admin\AdminUserController;
+use App\Http\Controllers\Admin\AjaxController;
 use App\Http\Controllers\Admin\DashboardController;
-use App\Http\Controllers\Admin\SubSectionController;
 use App\Http\Controllers\Admin\DesignationController;
+use App\Http\Controllers\Admin\ProjectController;
 use App\Http\Controllers\Admin\ProjectFileController;
+use App\Http\Controllers\Admin\SectionController;
+use App\Http\Controllers\Admin\SubSectionController;
+use App\Http\Controllers\Admin\TaskController;
+use App\Http\Controllers\MyProfileController;
 use App\Http\Controllers\Setting\AppDbBackupController;
-use App\Http\Controllers\Setting\Permission\RoleController;
 use App\Http\Controllers\Setting\Permission\PermissionController;
+use App\Http\Controllers\Setting\Permission\RoleController;
+use Illuminate\Support\Facades\Route;
 
 Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
 Route::get('/project', [DashboardController::class, 'project'])->name('dashboard.projects');
-
 
 // Role & Permission
 Route::post('/role/permission/{role}', [RoleController::class, 'assignPermission'])->name('role.permission');
@@ -38,8 +37,6 @@ Route::controller(AppDbBackupController::class)->prefix('app-db-backup')->group(
 // Global Ajax Route
 Route::get('select-2-ajax', [AjaxController::class, 'select2'])->name('select2');
 Route::post('response', [AjaxController::class, 'response'])->name('ajax');
-
-
 
 Route::resource('/admin-users', AdminUserController::class)->except(['show', 'create']);
 Route::patch('/admin-users/is-active/{user}', [AdminUserController::class, 'status'])->name('admin_users.is_active');
@@ -62,8 +59,6 @@ Route::patch('/projects/is-active/{project}', [ProjectController::class, 'status
 
 Route::resource('/tasks', TaskController::class)->except(['create']);
 // Route::resource('/dropzone', DropZoneController::class)->except(['index', 'create']);
-
-
 
 Route::controller(ProjectFileController::class)->prefix('project-files')->name('project_files.')->group(function () {
     Route::get('/index', 'index')->name('index');

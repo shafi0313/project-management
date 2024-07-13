@@ -3,15 +3,13 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Spatie\Permission\Traits\HasRoles;
-use Illuminate\Notifications\Notifiable;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
+use Spatie\Permission\Traits\HasRoles;
 
 /**
- *
- *
  * @property int $id
  * @property string $name
  * @property string $email
@@ -41,6 +39,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
  * @property-read int|null $permissions_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \Spatie\Permission\Models\Role> $roles
  * @property-read int|null $roles_count
+ *
  * @method static \Database\Factories\UserFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder|User newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|User newQuery()
@@ -75,11 +74,12 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
  * @method static \Illuminate\Database\Eloquent\Builder|User withoutPermission($permissions)
  * @method static \Illuminate\Database\Eloquent\Builder|User withoutRole($roles, $guard = null)
  * @method static \Illuminate\Database\Eloquent\Builder|User withoutTrashed()
+ *
  * @mixin \Eloquent
  */
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable, SoftDeletes, HasRoles;
+    use HasFactory, HasRoles, Notifiable, SoftDeletes;
 
     /**
      * The attributes that are mass assignable.
@@ -120,6 +120,7 @@ class User extends Authenticatable
     {
         return $this->belongsTo(Section::class);
     }
+
     public function subSection()
     {
         return $this->belongsTo(SubSection::class);

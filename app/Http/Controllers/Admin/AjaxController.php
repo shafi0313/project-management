@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Models\User;
+use App\Http\Controllers\Controller;
 use App\Models\Project;
 use App\Models\SubSection;
+use App\Models\User;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
 
 class AjaxController extends Controller
 {
@@ -96,7 +96,8 @@ class AjaxController extends Controller
             }
             $name = preg_split('/(?=[A-Z])/', str_replace('get', '', $request->type), -1, PREG_SPLIT_NO_EMPTY);
             $name = implode(' ', $name);
-            array_unshift($response, ['id' => ' ', 'text' => 'All ' . $name]);
+            array_unshift($response, ['id' => ' ', 'text' => 'All '.$name]);
+
             return $response;
         }
 

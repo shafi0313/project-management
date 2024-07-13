@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Models\Section;
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use Yajra\DataTables\Facades\DataTables;
 use App\Http\Requests\StoreSectionRequest;
 use App\Http\Requests\UpdateSectionRequest;
+use App\Models\Section;
+use Illuminate\Http\Request;
+use Yajra\DataTables\Facades\DataTables;
 
 class SectionController extends Controller
 {
@@ -22,6 +22,7 @@ class SectionController extends Controller
 
         if ($request->ajax()) {
             $sections = Section::orderBy('name');
+
             return DataTables::of($sections)
                 ->addIndexColumn()
                 ->addColumn('is_active', function ($row) {
@@ -37,22 +38,25 @@ class SectionController extends Controller
                     if (userCan('section-delete')) {
                         $btn .= view('button', ['type' => 'ajax-delete', 'route' => route('admin.sections.destroy', $row->id), 'row' => $row, 'src' => 'dt']);
                     }
+
                     return $btn;
                 })
                 ->rawColumns(['is_active', 'action'])
                 ->make(true);
         }
+
         return view('admin.section.index');
     }
 
-    function status(section $section)
+    public function status(section $section)
     {
         if ($error = $this->authorize('section-edit')) {
             return $error;
         }
-        $section->is_active = $section->is_active  == 1 ? 0 : 1;
+        $section->is_active = $section->is_active == 1 ? 0 : 1;
         try {
             $section->save();
+
             return response()->json(['message' => 'The status has been updated'], 200);
         } catch (\Exception $e) {
             return response()->json(['message' => 'Oops something went wrong, Please try again.'], 500);
@@ -71,6 +75,7 @@ class SectionController extends Controller
 
         try {
             Section::create($data);
+
             return response()->json(['message' => 'The information has been inserted'], 200);
         } catch (\Exception $e) {
             return response()->json(['message' => 'Oops something went wrong, Please try again.'], 500);
@@ -87,8 +92,10 @@ class SectionController extends Controller
         }
         if ($request->ajax()) {
             $modal = view('admin.section.edit')->with(['section' => $section])->render();
+
             return response()->json(['modal' => $modal], 200);
         }
+
         return abort(500);
     }
 
@@ -104,6 +111,7 @@ class SectionController extends Controller
 
         try {
             $section->update($data);
+
             return response()->json(['message' => 'The information has been updated'], 200);
         } catch (\Exception $e) {
             return response()->json(['message' => 'Oops something went wrong, Please try again'], 500);
@@ -120,6 +128,7 @@ class SectionController extends Controller
         }
         try {
             $section->delete();
+
             return response()->json(['message' => 'The information has been deleted'], 200);
         } catch (\Exception $e) {
             return response()->json(['message' => 'Oops something went wrong, Please try again'], 500);

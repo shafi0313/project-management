@@ -24,7 +24,7 @@ class StoreSubSectionRequest extends FormRequest
         return [
             'section_id' => ['required', 'exists:sections,id'],
             'name' => ['required', 'string', 'min:1', 'max:100', 'unique:sub_sections,name'],
-            'is_active' => ['nullable', 'boolean']
+            'is_active' => ['nullable', 'boolean'],
         ];
     }
 }

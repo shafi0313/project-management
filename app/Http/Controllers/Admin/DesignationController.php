@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Models\Designation;
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use Yajra\DataTables\Facades\DataTables;
 use App\Http\Requests\StoreDesignationRequest;
 use App\Http\Requests\UpdateDesignationRequest;
+use App\Models\Designation;
+use Illuminate\Http\Request;
+use Yajra\DataTables\Facades\DataTables;
 
 class DesignationController extends Controller
 {
@@ -22,6 +22,7 @@ class DesignationController extends Controller
 
         if ($request->ajax()) {
             $designations = Designation::query();
+
             return DataTables::of($designations)
                 ->addIndexColumn()
                 ->addColumn('is_active', function ($row) {
@@ -37,22 +38,25 @@ class DesignationController extends Controller
                     if (userCan('designation-delete')) {
                         $btn .= view('button', ['type' => 'ajax-delete', 'route' => route('admin.designations.destroy', $row->id), 'row' => $row, 'src' => 'dt']);
                     }
+
                     return $btn;
                 })
                 ->rawColumns(['is_active', 'action'])
                 ->make(true);
         }
+
         return view('admin.designation.index');
     }
 
-    function status(Designation $designation)
+    public function status(Designation $designation)
     {
         if ($error = $this->authorize('designation-edit')) {
             return $error;
         }
-        $designation->is_active = $designation->is_active  == 1 ? 0 : 1;
+        $designation->is_active = $designation->is_active == 1 ? 0 : 1;
         try {
             $designation->save();
+
             return response()->json(['message' => 'The status has been updated'], 200);
         } catch (\Exception $e) {
             return response()->json(['message' => 'Oops something went wrong, Please try again.'], 500);
@@ -71,6 +75,7 @@ class DesignationController extends Controller
 
         try {
             Designation::create($data);
+
             return response()->json(['message' => 'The information has been inserted'], 200);
         } catch (\Exception $e) {
             return response()->json(['message' => 'Oops something went wrong, Please try again.'], 500);
@@ -95,8 +100,10 @@ class DesignationController extends Controller
         }
         if ($request->ajax()) {
             $modal = view('admin.designation.edit')->with(['designation' => $designation])->render();
+
             return response()->json(['modal' => $modal], 200);
         }
+
         return abort(500);
     }
 
@@ -115,6 +122,7 @@ class DesignationController extends Controller
         }
         try {
             $designation->update($data);
+
             return response()->json(['message' => 'The information has been updated'], 200);
         } catch (\Exception $e) {
             return response()->json(['message' => 'Oops something went wrong, Please try again'], 500);
@@ -131,6 +139,7 @@ class DesignationController extends Controller
         }
         try {
             $designation->delete();
+
             return response()->json(['message' => 'The information has been deleted'], 200);
         } catch (\Exception $e) {
             return response()->json(['message' => 'Oops something went wrong, Please try again'], 500);

@@ -69,8 +69,6 @@
         <script>
             $(document).ready(function() {
                 getData(1, 'all-tab-pane');
-
-                // Event handler for tab button clicks
                 $('#myTab button').on('click', function(event) {
                     var section;
                     var tab = $(this).attr('id') + '-pane';
@@ -96,12 +94,9 @@
 
             function getData(section, tab) {
                 var tableElement = $('#' + tab + ' .table');
-
-                // Destroy existing DataTable instance if exists
                 if ($.fn.DataTable.isDataTable(tableElement)) {
                     tableElement.DataTable().destroy();
                 }
-
                 tableElement.DataTable({
                     processing: true,
                     serverSide: true,

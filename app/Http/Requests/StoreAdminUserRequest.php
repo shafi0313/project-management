@@ -22,16 +22,16 @@ class StoreAdminUserRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name'           => ['required', 'string', 'min:1', 'max:100'],
-            'email'          => ['required', 'string', 'min:1', 'max:64', 'unique:users,email'],
-            'user_name'      => ['nullable', 'string', 'min:1', 'max:32', 'unique:users,user_name'],
-            'gender'         => ['nullable', 'integer', 'in:1,2,3'],
-            'mobile'         => ['required', 'phone:BD'],
-            'address'        => ['required', 'string', 'min:1', 'max:191'],
+            'name' => ['required', 'string', 'min:1', 'max:100'],
+            'email' => ['required', 'string', 'min:1', 'max:64', 'unique:users,email'],
+            'user_name' => ['nullable', 'string', 'min:1', 'max:32', 'unique:users,user_name'],
+            'gender' => ['nullable', 'integer', 'in:1,2,3'],
+            'mobile' => ['required', 'phone:BD'],
+            'address' => ['required', 'string', 'min:1', 'max:191'],
             'designation_id' => ['nullable', 'exists:designations,id'],
-            'is_active'      => ['nullable', 'boolean', 'in:0,1'],
-            'image'          => ['nullable', 'image', 'mimes:jpeg,jpg,JPG,png,webp,svg'],
-            'password'       => ['required', 'confirmed', 'string', 'min:6', 'max:191'],
+            'is_active' => ['nullable', 'boolean', 'in:0,1'],
+            'image' => ['nullable', 'image', 'mimes:jpeg,jpg,JPG,png,webp,svg'],
+            'password' => ['required', 'confirmed', 'string', 'min:6', 'max:191'],
         ];
     }
 }

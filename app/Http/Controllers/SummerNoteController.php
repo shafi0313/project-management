@@ -12,6 +12,7 @@ class SummerNoteController extends Controller
 
         if (file_exists($imagePath)) {
             unlink($imagePath);
+
             return response()->json(['message' => 'Image deleted successfully'], 200);
         } else {
             return response()->json(['message' => 'Image not found'], 500);

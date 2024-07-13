@@ -23,8 +23,8 @@ trait SummerNoteTrait
                     // $imageName = "/uploads/images/" . $path .' / '. time() . $item . '.' . $imageType;
 
                     $uniqueId = uniqueId(10);
-                    $imageName = $uniqueId . $item . '.webp';
-                    $webpPath = '/uploads/images/' . $path . '/' . $imageName;
+                    $imageName = $uniqueId.$item.'.webp';
+                    $webpPath = '/uploads/images/'.$path.'/'.$imageName;
                     if (file_put_contents(public_path($webpPath), $imageData)) {
                         $webpImage = Image::make(public_path($webpPath));
                         $webpImage->encode('webp', 80);

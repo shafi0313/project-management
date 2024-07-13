@@ -23,7 +23,7 @@ class StoreSectionRequest extends FormRequest
     {
         return [
             'name' => ['required', 'string', 'min:1', 'max:100', 'unique:sections,name'],
-            'is_active' => ['nullable', 'in:0,1']
+            'is_active' => ['nullable', 'in:0,1'],
         ];
     }
 }

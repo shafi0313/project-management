@@ -22,8 +22,8 @@ class UpdateSectionRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => ['required', 'string', 'min:1', 'max:100', 'unique:sections,name,' . $this->section->id . 'id'],
-            'is_active' => ['nullable', 'in:0,1']
+            'name' => ['required', 'string', 'min:1', 'max:100', 'unique:sections,name,'.$this->section->id.'id'],
+            'is_active' => ['nullable', 'in:0,1'],
         ];
     }
 }
