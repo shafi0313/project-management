@@ -35,7 +35,7 @@
     crossorigin="anonymous" referrerpolicy="no-referrer" />
 
         <!-- Daterangepicker css -->
-    <link rel="stylesheet" href="{{ asset('backend/vendor/daterangepicker/daterangepicker.css') }}">
+    {{-- <link rel="stylesheet" href="{{ asset('backend/vendor/daterangepicker/daterangepicker.css') }}"> --}}
 </head>
 
 <body>
@@ -100,8 +100,8 @@
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
     <!-- Daterangepicker js -->
-    <script src="{{ asset('backend/vendor/daterangepicker/moment.min.js') }}"></script>
-    <script src="{{ asset('backend/vendor/daterangepicker/daterangepicker.js') }}"></script>
+    {{-- <script src="{{ asset('backend/vendor/daterangepicker/moment.min.js') }}"></script>
+    <script src="{{ asset('backend/vendor/daterangepicker/daterangepicker.js') }}"></script> --}}
 
     <!-- App js -->
     <script src="{{ asset('backend/js/app.min.js') }}"></script>

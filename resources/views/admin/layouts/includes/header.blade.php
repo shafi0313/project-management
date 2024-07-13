@@ -80,7 +80,7 @@
 
                     <div class="notification-list">
                         <!-- item-->
-                        <a href="javascript:void(0);" class="dropdown-item notify-item">
+                        {{-- <a href="javascript:void(0);" class="dropdown-item notify-item">
                             <div class="d-flex">
                                 <img class="d-flex me-2 rounded-circle"
                                     src="{{ asset('backend/images/users/avatar-2.jpg') }}"
@@ -90,9 +90,9 @@
                                     <span class="fs-12 mb-0">UI Designer</span>
                                 </div>
                             </div>
-                        </a>
+                        </a> --}}
 
-                        <!-- item-->
+                        {{-- <!-- item-->
                         <a href="javascript:void(0);" class="dropdown-item notify-item">
                             <div class="d-flex">
                                 <img class="d-flex me-2 rounded-circle"
@@ -103,7 +103,7 @@
                                     <span class="fs-12 mb-0">Developer</span>
                                 </div>
                             </div>
-                        </a>
+                        </a> --}}
                     </div>
                 </div>
             </div>

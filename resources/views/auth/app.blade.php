@@ -102,7 +102,7 @@
 
     <footer class="footer footer-alt">
         <span class="text-white-50">
-            Developed by <a href="{{ URL::to('https://softgiantbd.com/') }}" class="text-light">LS COMMUNICATIONS</a>
+            Developed by <a href="{{ URL::to('//www.lscominc.com/') }}" class="text-light">LS COMMUNICATIONS</a>
         </span>
     </footer>
     <!-- Vendor js -->
