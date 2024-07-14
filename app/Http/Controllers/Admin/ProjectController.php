@@ -26,16 +26,29 @@ class ProjectController extends Controller
         if ($request->ajax()) {
             $projects = Project::with([
                 'tasks',
-                'users:id,name,section_id',
-                'subSections:id,name',
+                'users:id,name',
+                'subSections:id,name,section_id',
                 'createdBy:id,section_id',
                 'createdBy.section:id,name',
                 'updatedBy:id,name',
             ])
-                ->whereHas('users', function ($query) {
-                    return $query->whereIn('section_id', [1, 2, 3, 4])
+                ->whereHas('subSections', function ($q) {
+                    $q->whereIn('section_id', [1, 2, 3, 4])
                         ->orWhere('sub_section_id', user()->sub_section_id);
                 });
+
+            // $projects = Project::with([
+            //     'tasks',
+            //     'users:id,name,section_id',
+            //     'subSections:id,name',
+            //     'createdBy:id,section_id',
+            //     'createdBy.section:id,name',
+            //     'updatedBy:id,name',
+            // ])
+            //     ->whereHas('users', function ($query) {
+            //         return $query->whereIn('section_id', [1, 2, 3, 4])
+            //             ->orWhere('sub_section_id', user()->sub_section_id);
+            //     });
 
             return DataTables::of($projects)
                 ->addIndexColumn()
