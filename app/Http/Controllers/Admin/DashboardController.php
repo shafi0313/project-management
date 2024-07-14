@@ -15,6 +15,22 @@ class DashboardController extends Controller
             return $error;
         }
 
+        // return user()->subSection;
+        // return $projects = Project::with([
+        //     'tasks',
+        //     'users:id,name,section_id',
+        //     'subSections',
+        //     'createdBy:id,section_id',
+        //     'createdBy.section:id,name',
+        //     'updatedBy:id,name',
+        // ])
+        // ->whereHas('subSections', function ($q) {
+        //     $q->whereIn('section_id', [1, 2, 3, 4])
+        //       ->orWhere('sub_section_id', user()->sub_section_id);
+        // })
+        // ->get();
+
+
         return view('admin.dashboard');
     }
 
@@ -23,30 +39,27 @@ class DashboardController extends Controller
         if ($error = $this->authorize('project-manage')) {
             return $error;
         }
-        if ($request->section_id == 1) {
-            $sectionId = [1, 2, 3, 4];
-        } else {
-            $sectionId = [(int) $request->section_id];
-        }
+
+        $sectionId = $request->section_id == 1 ? $sectionId = [1, 2, 3, 4] : $sectionId = [(int) $request->section_id];
 
         if ($request->ajax()) {
             $projects = Project::with([
                 'tasks',
-                'users:id,name,section_id',
-                'subSections:id,name',
+                'users:id,name',
+                'subSections:id,name,section_id',
                 'createdBy:id,section_id',
                 'createdBy.section:id,name',
                 'updatedBy:id,name',
             ])
-                ->whereHas('users', function ($query) use ($sectionId) {
-                    return $query->whereIn('section_id', $sectionId);
-                    // ->orWhere('sub_section_id', user()->sub_section_id);
+                ->whereHas('subSections', function ($q) use ($sectionId) {
+                    $q->whereIn('section_id', $sectionId)
+                        ->orWhere('sub_section_id', user()->sub_section_id);
                 });
 
             return DataTables::of($projects)
                 ->addIndexColumn()
                 ->addColumn('job_description', function ($row) {
-                    return '<div>'.$row->job_description.'</div>';
+                    return '<div>' . $row->job_description . '</div>';
                 })
                 ->addColumn('deadline', function ($row) {
                     return bdDate($row->deadline);
@@ -72,18 +85,18 @@ class DashboardController extends Controller
                         $bg = 'bg-success';
                     }
 
-                    return '<div class="progress" role="progressbar" aria-valuenow="'.$percentage.'" aria-valuemin="0" aria-valuemax="100">
-                                <div class="progress-bar '.$bg.'" style="width:'.$percentage.'%">'.$percentage.'%</div>
+                    return '<div class="progress" role="progressbar" aria-valuenow="' . $percentage . '" aria-valuemin="0" aria-valuemax="100">
+                                <div class="progress-bar ' . $bg . '" style="width:' . $percentage . '%">' . $percentage . '%</div>
                             </div>';
                 })
                 ->addColumn('users', function ($row) {
                     return $row->users->map(function ($user) {
-                        return '<span class="badge text-bg-success">'.$user->name.'</span>';
+                        return '<span class="badge text-bg-success">' . $user->name . '</span>';
                     })->implode(' ');
                 })
                 ->addColumn('sub_sections', function ($row) {
                     return $row->subSections->map(function ($subSection) {
-                        return '<span class="badge text-bg-primary">'.$subSection->name.'</span>';
+                        return '<span class="badge text-bg-primary">' . $subSection->name . '</span>';
                     })->implode(' ');
                 })
                 ->addColumn('status', function ($row) {
