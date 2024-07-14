@@ -7,11 +7,13 @@ use App\Http\Requests\StoreProjectRequest;
 use App\Http\Requests\UpdateProjectRequest;
 use App\Models\Project;
 use App\Models\Task;
+use App\Traits\Traits\ActionTrait;
 use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
 
 class ProjectController extends Controller
 {
+    use ActionTrait;
     /**
      * Display a listing of the resource.
      */
@@ -170,9 +172,6 @@ class ProjectController extends Controller
         if ($error = $this->authorize('project-add')) {
             return $error;
         }
-        if (actionCondition()) {
-            return response()->json(['message' => 'You can not access this action'], 500);
-        }
 
         $data = $request->validated();
         $data['created_by'] = user()->id;
@@ -183,7 +182,6 @@ class ProjectController extends Controller
         try {
             $project = Project::create($data);
             $project->users()->sync($request->user_id);
-
             return response()->json(['message' => 'The information has been inserted'], 200);
         } catch (\Exception $e) {
             // return response()->json(['message' => $e->getMessage()], 500);
@@ -205,7 +203,6 @@ class ProjectController extends Controller
             'createdBy.section:id,name',
             'updatedBy:id,name',
         ]);
-
         return view('admin.project.show', compact('project'));
     }
 
@@ -217,15 +214,12 @@ class ProjectController extends Controller
         if ($error = $this->authorize('project-edit')) {
             return $error;
         }
-
-        $this->actionCondition($project);
+        return $this->action($project);
 
         if ($request->ajax()) {
             $modal = view('admin.project.edit')->with(['project' => $project])->render();
-
             return response()->json(['modal' => $modal], 200);
         }
-
         return abort(500);
     }
 
@@ -237,14 +231,7 @@ class ProjectController extends Controller
         if ($error = $this->authorize('project-add')) {
             return $error;
         }
-        $projectUsers = $project->load([
-            'users:id,section_id,sub_section_id'
-        ]);
-        $projectSectionId = array_merge($projectUsers->users->pluck('section_id')->toArray(), [1, user()->subSection?->section_id]);
-        $projectSubSectionId = array_merge($projectUsers->users->pluck('sub_section_id')->toArray(), [user()->sub_section_id]);
-        if (!in_array(user()->section_id, $projectSectionId) || !in_array(user()->sub_section_id, $projectSubSectionId)) {
-            return response()->json(['message' => 'You can not access this action'], 500);
-        }
+        return $this->action($project);
 
         $data = $project->validated();
         $image = $project->image;
@@ -253,7 +240,6 @@ class ProjectController extends Controller
         }
         try {
             $project->update($data);
-
             return response()->json(['message' => 'The information has been updated'], 200);
         } catch (\Exception $e) {
             return response()->json(['message' => 'Oops something went wrong, Please try again'], 500);
@@ -268,34 +254,14 @@ class ProjectController extends Controller
         if ($error = $this->authorize('project-delete')) {
             return $error;
         }
-        $projectUsers = $project->load([
-            'users:id,section_id,sub_section_id'
-        ]);
-        $projectSectionId = array_merge($projectUsers->users->pluck('section_id')->toArray(), [1, user()->subSection?->section_id]);
-        $projectSubSectionId = array_merge($projectUsers->users->pluck('sub_section_id')->toArray(), [user()->sub_section_id]);
-        if (!in_array(user()->section_id, $projectSectionId) || !in_array(user()->sub_section_id, $projectSubSectionId)) {
-            return response()->json(['message' => 'You can not access this action'], 500);
-        }
+        return $this->action($project);
+
         try {
             // imgUnlink('project', $project->image);
             $project->delete();
-
             return response()->json(['message' => 'The information has been deleted'], 200);
         } catch (\Exception $e) {
             return response()->json(['message' => 'Oops something went wrong, Please try again'], 500);
-        }
-    }
-
-    public function actionCondition($project)
-    {
-        $projectUsers = $project->load(['users:id,section_id,sub_section_id']);
-        $subSectionToSectionIds = $projectUsers->users->map(function ($user) {
-            return $user->subSection ? $user->subSection->section_id : null;
-        })->filter()->toArray();
-        $projectSectionId = array_merge($projectUsers->users->pluck('section_id')->toArray(), [1, user()->subSection?->section_id],$subSectionToSectionIds);
-        $projectSubSectionId = array_merge($projectUsers->users->pluck('sub_section_id')->toArray(), [user()->sub_section_id]);
-        if (!in_array(user()->section_id, $projectSectionId) || !in_array(user()->sub_section_id, $projectSubSectionId)) {
-            return response()->json(['message' => 'You can not access this action'], 500);
         }
     }
 }
