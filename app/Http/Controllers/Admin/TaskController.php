@@ -53,9 +53,9 @@ class TaskController extends Controller
                 ->addColumn('action', function ($row) {
                     $btn = '';
                     $btn .= view('button', ['type' => 'ajax-show', 'route' => route('admin.tasks.show', $row->id), 'row' => $row]);
-                    // if (userCan('project-edit')) {
-                    //     $btn .= view('button', ['type' => 'ajax-edit', 'route' => route('admin.projects.edit', $row->id), 'row' => $row]);
-                    // }
+                    if (userCan('project-edit')) {
+                        $btn .= view('button', ['type' => 'ajax-edit', 'route' => route('admin.tasks.edit', $row->id), 'row' => $row]);
+                    }
                     if (userCan('project-delete')) {
                         $btn .= view('button', ['type' => 'ajax-delete', 'route' => route('admin.tasks.destroy', $row->id), 'row' => $row, 'src' => 'dt']);
                     }
@@ -70,14 +70,6 @@ class TaskController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
      * Store a newly created resource in storage.
      */
     public function store(StoreTaskRequest $request)
@@ -85,9 +77,9 @@ class TaskController extends Controller
         if ($error = $this->authorize('task-add')) {
             return $error;
         }
-        if (actionCondition()) {
-            return response()->json(['message' => 'You can not access this action'], 500);
-        }
+        // if (actionCondition()) {
+        //     return response()->json(['message' => 'You can not access this action'], 500);
+        // }
 
         $data = $request->validated();
         $data['created_by'] = user()->id;
@@ -130,8 +122,18 @@ class TaskController extends Controller
         if ($error = $this->authorize('task-show')) {
             return $error;
         }
+        $taskUsers = $task->load(['users:id,section_id,sub_section_id']);
+        $subSectionToSectionIds = $taskUsers->users->map(function ($user) {
+            return $user->subSection ? $user->subSection->section_id : null;
+        })->filter()->toArray();
+        $taskSectionId = array_merge($taskUsers->users->pluck('section_id')->toArray(), [1, user()->subSection?->section_id], $subSectionToSectionIds);
+        $taskSubSectionId = array_merge($taskUsers->users->pluck('sub_section_id')->toArray(), [user()->sub_section_id]);
+        if (!in_array(user()->section_id, $taskSectionId) || !in_array(user()->sub_section_id, $taskSubSectionId)) {
+            return response()->json(['message' => 'You can not access this action'], 500);
+        }
+
         if ($request->ajax()) {
-            $modal = view('admin.project.edit')->with(['task' => $task])->render();
+            $modal = view('admin.task.edit')->with(['task' => $task])->render();
 
             return response()->json(['modal' => $modal], 200);
         }

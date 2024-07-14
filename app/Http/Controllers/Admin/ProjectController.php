@@ -38,7 +38,7 @@ class ProjectController extends Controller
             return DataTables::of($projects)
                 ->addIndexColumn()
                 ->addColumn('job_description', function ($row) {
-                    return '<div>'.$row->job_description.'</div>';
+                    return '<div>' . $row->job_description . '</div>';
                 })
                 ->addColumn('deadline', function ($row) {
                     return bdDate($row->deadline);
@@ -64,18 +64,18 @@ class ProjectController extends Controller
                         $bg = 'bg-success';
                     }
 
-                    return '<div class="progress" role="progressbar" aria-valuenow="'.$percentage.'" aria-valuemin="0" aria-valuemax="100">
-                                <div class="progress-bar '.$bg.'" style="width:'.$percentage.'%">'.$percentage.'%</div>
+                    return '<div class="progress" role="progressbar" aria-valuenow="' . $percentage . '" aria-valuemin="0" aria-valuemax="100">
+                                <div class="progress-bar ' . $bg . '" style="width:' . $percentage . '%">' . $percentage . '%</div>
                             </div>';
                 })
                 ->addColumn('users', function ($row) {
                     return $row->users->map(function ($user) {
-                        return '<span class="badge text-bg-success">'.$user->name.'</span>';
+                        return '<span class="badge text-bg-success">' . $user->name . '</span>';
                     })->implode(' ');
                 })
                 ->addColumn('sub_sections', function ($row) {
                     return $row->subSections->map(function ($subSection) {
-                        return '<span class="badge text-bg-primary">'.$subSection->name.'</span>';
+                        return '<span class="badge text-bg-primary">' . $subSection->name . '</span>';
                     })->implode(' ');
                 })
                 ->addColumn('status', function ($row) {
@@ -132,11 +132,11 @@ class ProjectController extends Controller
                     return priority($row->priority);
                 })
                 ->addColumn('task_description', function ($row) {
-                    return '<div>'.$row->task_description.'</div>';
+                    return '<div>' . $row->task_description . '</div>';
                 })
                 ->addColumn('user', function ($row) {
                     return $row->users->map(function ($user) {
-                        return '<span class="badge text-bg-success">'.$user->name.'</span>';
+                        return '<span class="badge text-bg-success">' . $user->name . '</span>';
                     })->implode(' ');
                 })
                 // ->addColumn('image', function ($row) {
@@ -146,9 +146,9 @@ class ProjectController extends Controller
                 ->addColumn('action', function ($row) {
                     $btn = '';
                     $btn .= view('button', ['type' => 'ajax-show', 'route' => route('admin.tasks.show', $row->id), 'row' => $row]);
-                    // if (userCan('project-edit')) {
-                    //     $btn .= view('button', ['type' => 'ajax-edit', 'route' => route('admin.projects.edit', $row->id), 'row' => $row]);
-                    // }
+                    if (userCan('project-edit')) {
+                        $btn .= view('button', ['type' => 'ajax-edit', 'route' => route('admin.tasks.edit', $row->id), 'row' => $row]);
+                    }
                     if (userCan('project-delete')) {
                         $btn .= view('button', ['type' => 'ajax-delete', 'route' => route('admin.tasks.destroy', $row->id), 'row' => $row, 'src' => 'dt']);
                     }
@@ -218,10 +218,11 @@ class ProjectController extends Controller
             return $error;
         }
 
-        $projectUsers = $project->load([
-            'users:id,section_id,sub_section_id'
-        ]);
-        $projectSectionId = array_merge($projectUsers->users->pluck('section_id')->toArray(), [1, user()->subSection?->section_id]);
+        $projectUsers = $project->load(['users:id,section_id,sub_section_id']);
+        $subSectionToSectionIds = $projectUsers->users->map(function ($user) {
+            return $user->subSection ? $user->subSection->section_id : null;
+        })->filter()->toArray();
+        $projectSectionId = array_merge($projectUsers->users->pluck('section_id')->toArray(), [1, user()->subSection?->section_id],$subSectionToSectionIds);
         $projectSubSectionId = array_merge($projectUsers->users->pluck('sub_section_id')->toArray(), [user()->sub_section_id]);
         if (!in_array(user()->section_id, $projectSectionId) || !in_array(user()->sub_section_id, $projectSubSectionId)) {
             return response()->json(['message' => 'You can not access this action'], 500);

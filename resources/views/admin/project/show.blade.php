@@ -111,7 +111,7 @@
                             name: 'action',
                             title: 'Action',
                             className: "text-center",
-                            width: "60px",
+                            width: "100px",
                             orderable: false,
                             searchable: false,
                         },
@@ -178,9 +178,9 @@
                         {
                             data: 'action',
                             name: 'action',
-                            title: 'Action',
+                            title: 'Functions',
                             className: "text-center",
-                            width: "100px",
+                            width: "90px",
                             orderable: false,
                             searchable: false,
                         },
@@ -273,6 +273,6 @@
                 });
             })
         </script>
-        
+
     @endpush
 @endsection

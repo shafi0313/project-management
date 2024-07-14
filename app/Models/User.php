@@ -123,6 +123,6 @@ class User extends Authenticatable
 
     public function subSection()
     {
-        return $this->belongsTo(SubSection::class);
+        return $this->belongsTo(SubSection::class, 'sub_section_id', 'id');
     }
 }
