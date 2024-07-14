@@ -118,11 +118,15 @@ class User extends Authenticatable
 
     public function section()
     {
-        return $this->belongsTo(Section::class);
+        return $this->belongsTo(Section::class)->withDefault([
+            'name' => 'N/A',
+        ]);
     }
 
     public function subSection()
     {
-        return $this->belongsTo(SubSection::class, 'sub_section_id', 'id');
+        return $this->belongsTo(SubSection::class, 'sub_section_id', 'id')->withDefault([
+            'name' => 'N/A',
+        ]);
     }
 }

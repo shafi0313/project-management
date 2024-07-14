@@ -28,8 +28,9 @@ class StoreAdminUserRequest extends FormRequest
             'gender' => ['nullable', 'integer', 'in:1,2,3'],
             'mobile' => ['required', 'phone:BD'],
             'address' => ['required', 'string', 'min:1', 'max:191'],
-            'designation_id' => ['nullable', 'exists:designations,id'],
-            'is_active' => ['nullable', 'boolean', 'in:0,1'],
+            'section_id' => ['required', 'exists:sections,id'],
+            'sub_section_id' => ['nullable', 'exists:sub_sections,id'],
+            'is_active' => ['nullable', 'boolean'],
             'image' => ['nullable', 'image', 'mimes:jpeg,jpg,JPG,png,webp,svg'],
             'password' => ['required', 'confirmed', 'string', 'min:6', 'max:191'],
         ];

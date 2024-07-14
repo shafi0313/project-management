@@ -69,6 +69,16 @@
                             title: 'gender'
                         },
                         {
+                            data: 'section.name',
+                            name: 'section.name',
+                            title: 'section'
+                        },
+                        {
+                            data: 'sub_section.name',
+                            name: 'sub_section.name',
+                            title: 'sub section'
+                        },
+                        {
                             data: 'permission',
                             name: 'permission',
                             title: 'Permission'
@@ -99,6 +109,56 @@
                     }
                 });
             });
+            $(document).ready(function() {
+                $('#section_id').select2({
+                    dropdownParent: $('.modal-body'),
+                    width: '100%',
+                    placeholder: 'Select...',
+                    allowClear: true,
+                    ajax: {
+                        url: window.location.origin + '/dashboard/select-2-ajax',
+                        dataType: 'json',
+                        delay: 250,
+                        cache: true,
+                        data: function(params) {
+                            return {
+                                q: $.trim(params.term),
+                                type: 'getSection',
+                            };
+                        },
+                        processResults: function(data) {
+                            return {
+                                results: data
+                            };
+                        }
+                    }
+                });
+
+                $('#sub_section_id').select2({
+                    dropdownParent: $('.modal-body'),
+                    width: '100%',
+                    placeholder: 'Select section first...',
+                    allowClear: true,
+                    ajax: {
+                        url: window.location.origin + '/dashboard/select-2-ajax',
+                        dataType: 'json',
+                        delay: 250,
+                        cache: true,
+                        data: function(params) {
+                            return {
+                                q: $.trim(params.term),
+                                type: 'getSubSectionBySection',
+                                section_id: $('#section_id').find(":selected").val()
+                            };
+                        },
+                        processResults: function(data) {
+                            return {
+                                results: data
+                            };
+                        }
+                    }
+                });
+            })
         </script>
     @endpush
 @endsection

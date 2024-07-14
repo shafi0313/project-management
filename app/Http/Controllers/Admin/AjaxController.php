@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
-use App\Models\Project;
-use App\Models\SubSection;
 use App\Models\User;
+use App\Models\Project;
+use App\Models\Section;
+use App\Models\SubSection;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 
 class AjaxController extends Controller
 {
@@ -20,6 +21,33 @@ class AjaxController extends Controller
                         ->whereIsActive(1)
                         ->orderBy('name')
                         ->limit(10)
+                        ->get()->map(function ($data) {
+                            return [
+                                'id' => $data->id,
+                                'text' => $data->name,
+                            ];
+                        })->toArray();
+                    break;
+                case 'getSection':
+                    $response = Section::select('id', 'name')
+                        ->where('name', 'like', "%{$request->q}%")
+                        ->whereIsActive(1)
+                        ->orderBy('name')
+                        ->limit(15)
+                        ->get()->map(function ($data) {
+                            return [
+                                'id' => $data->id,
+                                'text' => $data->name,
+                            ];
+                        })->toArray();
+                    break;
+                case 'getSubSectionBySection':
+                    $response = SubSection::select('id', 'name')
+                        ->whereSectionId($request->section_id)
+                        ->where('name', 'like', "%{$request->q}%")
+                        ->whereIsActive(1)
+                        ->orderBy('name')
+                        ->limit(15)
                         ->get()->map(function ($data) {
                             return [
                                 'id' => $data->id,
@@ -96,7 +124,7 @@ class AjaxController extends Controller
             }
             $name = preg_split('/(?=[A-Z])/', str_replace('get', '', $request->type), -1, PREG_SPLIT_NO_EMPTY);
             $name = implode(' ', $name);
-            array_unshift($response, ['id' => ' ', 'text' => 'All '.$name]);
+            // array_unshift($response, ['id' => ' ', 'text' => 'All '.$name]);
 
             return $response;
         }

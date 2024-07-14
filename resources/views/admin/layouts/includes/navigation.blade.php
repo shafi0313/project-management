@@ -71,9 +71,9 @@
                 </a>
                 <div class="collapse" id="sidebarAdmin">
                     <ul class="side-nav-second-level">
-                        <li>
+                        {{-- <li>
                             <a href="{{ route('admin.designations.index') }}">@lang('Designation')</a>
-                        </li>
+                        </li> --}}
                         <li>
                             <a href="{{ route('admin.sections.index') }}">@lang('Section')</a>
                         </li>

@@ -2,7 +2,7 @@
     <div class="modal-dialog modal-dialog-centered modal-xl">
         <div class="modal-content">
             <div class="modal-header">
-                <h1 class="modal-title fs-5" id="editModalLabel">Add Admin User</h1>
+                <h1 class="modal-title fs-5" id="editModalLabel">Edit Admin User</h1>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <form onsubmit="ajaxStoreModal(event, this, 'editModal')"
@@ -12,12 +12,15 @@
                 <div class="modal-body">
                     <div class="row gy-2">
                         <div class="col-md-6">
-                            <label for="designation_id" class="form-label required">Designation </label>
-                            <select name="designation_id" class="form-control">
-                                <option value="">Select</option>
-                                @foreach ($designations as $designation)
-                                    <option value="{{ $designation->id }}" @selected($admin_user->designation_id == $designation->id)>{{ $designation->name }}</option>
-                                @endforeach
+                            <label for="section_id" class="form-label required">Section </label>
+                            <select name="section_id" id="edit_section_id" class="form-control" required>
+                                <option value="{{ user()->section_id }}">{{ user()->section->name }}</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="sub_section_id" class="form-label">Sub Section </label>
+                            <select name="sub_section_id" id="edit_sub_section_id" class="form-control sub_section_id">
+                                <option value="{{ user()->sub_section_id }}">{{ user()->subSection?->name }}</option>
                             </select>
                         </div>
                         <div class="col-md-6">
@@ -32,12 +35,12 @@
                         </div>
                         <div class="col-md-6">
                             <label for="user_name" class="form-label">user name </label>
-                            <input type="text" name="user_name" value="{{ old('name_name') ?? $admin_user->name_name }}"
-                                class="form-control">
+                            <input type="text" name="user_name"
+                                value="{{ old('name_name') ?? $admin_user->name_name }}" class="form-control">
                         </div>
                         <div class="col-md-6">
                             <label for="mobile" class="form-label required">mobile </label>
-                            <input type="text" name="mobile" value="{{ old('mobile') ?? $admin_user->phone }}"
+                            <input type="text" name="mobile" value="{{ old('mobile') ?? $admin_user->mobile }}"
                                 class="form-control" oninput="phoneIn(event)">
                         </div>
                         <div class="col-md-6">
@@ -85,3 +88,55 @@
         </div>
     </div>
 </div>
+<script>
+    $(document).ready(function() {
+        $('#edit_section_id').select2({
+            dropdownParent: $('#editModal'),
+            width: '100%',
+            placeholder: 'Select...',
+            allowClear: true,
+            ajax: {
+                url: window.location.origin + '/dashboard/select-2-ajax',
+                dataType: 'json',
+                delay: 250,
+                cache: true,
+                data: function(params) {
+                    return {
+                        q: $.trim(params.term),
+                        type: 'getSection',
+                    };
+                },
+                processResults: function(data) {
+                    return {
+                        results: data
+                    };
+                }
+            }
+        });
+
+        $('#edit_sub_section_id').select2({
+            dropdownParent: $('#editModal'),
+            width: '100%',
+            placeholder: 'Select section first...',
+            allowClear: true,
+            ajax: {
+                url: window.location.origin + '/dashboard/select-2-ajax',
+                dataType: 'json',
+                delay: 250,
+                cache: true,
+                data: function(params) {
+                    return {
+                        q: $.trim(params.term),
+                        type: 'getSubSectionBySection',
+                        section_id: $('#edit_section_id').find(":selected").val()
+                    };
+                },
+                processResults: function(data) {
+                    return {
+                        results: data
+                    };
+                }
+            }
+        });
+    })
+</script>

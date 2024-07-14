@@ -39,7 +39,7 @@
                         <li class="nav-item" role="presentation">
                             <button class="nav-link" id="sd-tab" data-bs-toggle="tab" data-bs-target="#sd-tab-pane"
                                 type="button" role="tab" aria-controls="sd-tab-pane" aria-selected="false"
-                                sd>SD(STAT)</button>
+                                sd>SO(STAT)</button>
                         </li>
                     </ul>
                     <div class="tab-content mt-2" id="myTabContent">

@@ -11,12 +11,13 @@
                 <div class="modal-body">
                     <div class="row gy-2">
                         <div class="col-md-6">
-                            <label for="designation_id" class="form-label required">Designation </label>
-                            <select name="designation_id" class="form-control">
-                                <option value="">Select</option>
-                                @foreach ($designations as $designation)
-                                    <option value="{{ $designation->id }}">{{ $designation->name }}</option>
-                                @endforeach
+                            <label for="section_id" class="form-label required">Section </label>
+                            <select name="section_id" id="section_id" class="form-control" required>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="sub_section_id" class="form-label">Sub Section </label>
+                            <select name="sub_section_id" id="sub_section_id" class="form-control">
                             </select>
                         </div>
                         <div class="col-md-6">

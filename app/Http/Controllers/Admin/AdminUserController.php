@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreAdminUserRequest;
 use App\Http\Requests\UpdateAdminUserRequest;
 use App\Models\Designation;
+use App\Models\Section;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -21,7 +22,7 @@ class AdminUserController extends Controller
         }
 
         if ($request->ajax()) {
-            $admin_users = User::whereIn('role', [1]);
+            $admin_users = User::with(['section:id,name','subSection:id,name'])->whereIn('role', [1]);
 
             return DataTables::of($admin_users)
                 ->addIndexColumn()
@@ -57,8 +58,6 @@ class AdminUserController extends Controller
         }
         // $roles = Role::all();
         $data['genders'] = config('datum.gender');
-        $data['designations'] = Designation::where('is_active', 1)->get();
-
         return view('admin.user.admin.index', $data);
     }
 
