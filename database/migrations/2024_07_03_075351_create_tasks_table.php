@@ -20,6 +20,7 @@ return new class extends Migration
             $table->date('deadline')->nullable();
             $table->enum('priority', ['low', 'medium', 'high'])->nullable();
             $table->tinyInteger('status')->default(1);
+            $table->tinyInteger('task_request')->nullable()->comment('1: Requested, 2: Approved, 3: Rejected');
             $table->foreignId('created_by')->constrained('users')->onDelete('cascade');
             $table->foreignId('updated_by')->nullable()->constrained('users')->onDelete('cascade');
             $table->timestamps();

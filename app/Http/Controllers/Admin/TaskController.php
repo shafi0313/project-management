@@ -88,19 +88,18 @@ class TaskController extends Controller
         if (actionCondition()) {
             return response()->json(['message' => 'You can not access this action'], 500);
         }
+
         $data = $request->validated();
         $data['created_by'] = user()->id;
-        // if ($request->hasFile('image')) {
-        //     $data['image'] = imgWebpStore($request->image, 'project', [1920, 1080]);
-        // }
+        if(user()->sub_section_id){
+            $data['task_request'] = 1;
+        }
 
         try {
             $task = Task::create($data);
             $task->users()->sync($request->user_id);
-
             return response()->json(['message' => 'The information has been inserted'], 200);
         } catch (\Exception $e) {
-            // return response()->json(['message' => $e->getMessage()], 500);
             return response()->json(['message' => 'Oops something went wrong, Please try again.'], 500);
         }
     }

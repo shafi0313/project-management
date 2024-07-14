@@ -217,7 +217,13 @@ class ProjectController extends Controller
         if ($error = $this->authorize('project-edit')) {
             return $error;
         }
-        if (actionCondition()) {
+
+        $projectUsers = $project->load([
+            'users:id,section_id,sub_section_id'
+        ]);
+        $projectSectionId = array_merge($projectUsers->users->pluck('section_id')->toArray(), [1, user()->subSection?->section_id]);
+        $projectSubSectionId = array_merge($projectUsers->users->pluck('sub_section_id')->toArray(), [user()->sub_section_id]);
+        if (!in_array(user()->section_id, $projectSectionId) || !in_array(user()->sub_section_id, $projectSubSectionId)) {
             return response()->json(['message' => 'You can not access this action'], 500);
         }
 
@@ -238,9 +244,15 @@ class ProjectController extends Controller
         if ($error = $this->authorize('project-add')) {
             return $error;
         }
-        if (actionCondition()) {
+        $projectUsers = $project->load([
+            'users:id,section_id,sub_section_id'
+        ]);
+        $projectSectionId = array_merge($projectUsers->users->pluck('section_id')->toArray(), [1, user()->subSection?->section_id]);
+        $projectSubSectionId = array_merge($projectUsers->users->pluck('sub_section_id')->toArray(), [user()->sub_section_id]);
+        if (!in_array(user()->section_id, $projectSectionId) || !in_array(user()->sub_section_id, $projectSubSectionId)) {
             return response()->json(['message' => 'You can not access this action'], 500);
         }
+
         $data = $project->validated();
         $image = $project->image;
         if ($request->hasFile('image')) {
@@ -263,7 +275,12 @@ class ProjectController extends Controller
         if ($error = $this->authorize('project-delete')) {
             return $error;
         }
-        if (actionCondition()) {
+        $projectUsers = $project->load([
+            'users:id,section_id,sub_section_id'
+        ]);
+        $projectSectionId = array_merge($projectUsers->users->pluck('section_id')->toArray(), [1, user()->subSection?->section_id]);
+        $projectSubSectionId = array_merge($projectUsers->users->pluck('sub_section_id')->toArray(), [user()->sub_section_id]);
+        if (!in_array(user()->section_id, $projectSectionId) || !in_array(user()->sub_section_id, $projectSubSectionId)) {
             return response()->json(['message' => 'You can not access this action'], 500);
         }
         try {

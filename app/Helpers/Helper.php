@@ -383,10 +383,17 @@ if (! function_exists('priority')) {
         };
     }
 
+    // if (! function_exists('projectActionCondition')) {
+    //     function projectActionCondition($projectSectionId, $projectSubSectionId)
+    //     {
+    //         return !in_array(user()->section_id, $projectSectionId) || !in_array(user()->sub_section_id, $projectSubSectionId);
+    //     }
+    // }
+
     if (! function_exists('actionCondition')) {
         function actionCondition()
         {
-            return ! in_array(user()->section_id, [1, user()->subSection->section_id]) || ! in_array(user()->sub_section_id, [user()->sub_section_id]);
+            return ! in_array(user()->section_id, [1, user()->subSection?->section_id]) || ! in_array(user()->sub_section_id, [user()->sub_section_id]);
         }
     }
 
