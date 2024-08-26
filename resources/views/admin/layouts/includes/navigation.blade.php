@@ -1,9 +1,9 @@
 <div class="leftside-menu">
-<style>
-    .logo img {
-        height: 60px !important;
-    }
-</style>
+    <style>
+        .logo img {
+            height: 60px !important;
+        }
+    </style>
     <!-- Brand Logo Light -->
     <a href="{{ route('admin.dashboard') }}" class="logo logo-light">
         <span class="logo-lg">
@@ -62,14 +62,22 @@
                 </a>
             </li>
 
-            <li class="side-nav-item">
+            @php
+                $admin = [
+                    'admin.designations.index',
+                    'admin.sections.index',
+                    'admin.sub-sections.index',
+                    'admin.admin-users.index',
+                ];
+            @endphp
+            <li class="side-nav-item {{ activeNav($admin) }}">
                 <a data-bs-toggle="collapse" href="#sidebarAdmin" aria-expanded="false" aria-controls="sidebarAdmin"
                     class="side-nav-link">
                     <i class="fa-solid fa-user-shield"></i>
                     <span> Admin </span>
                     <span class="menu-arrow"></span>
                 </a>
-                <div class="collapse" id="sidebarAdmin">
+                <div class="collapse {{ openNav($admin) }}" id="sidebarAdmin">
                     <ul class="side-nav-second-level">
                         {{-- <li>
                             <a href="{{ route('admin.designations.index') }}">@lang('Designation')</a>
@@ -87,13 +95,13 @@
                 </div>
             </li>
 
-            <li class="side-nav-item">
+            <li class="side-nav-item {{ activeNav('admin.projects.*') }}">
                 <a href="{{ route('admin.projects.index') }}" class="side-nav-link">
                     <i class="fa-solid fa-folder-open text-warning"></i>
-                    <span> @lang('Project') </span>
+                    <span> @lang('Projects') </span>
                 </a>
             </li>
-            <li class="side-nav-item">
+            <li class="side-nav-item {{ activeNav('admin.tasks.*') }}">
                 <a href="{{ route('admin.tasks.index') }}" class="side-nav-link">
                     <i class="fa-solid fa-list-check text-info"></i>
                     <span> @lang('Task') </span>

@@ -51,6 +51,11 @@
                             orderable: false,
                         },
                         {
+                            data: 'project.job_name',
+                            name: 'project.job_name',
+                            title: 'Job Name'
+                        },
+                        {
                             data: 'task_name',
                             name: 'task_name',
                             title: 'task name'

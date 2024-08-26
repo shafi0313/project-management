@@ -19,14 +19,28 @@ class TaskController extends Controller
         if ($error = $this->authorize('project-manage')) {
             return $error;
         }
-
+        // return $tasks = Task::with([
+        //     'project:id,job_name',
+        //     'users:id,name,email,section_id,sub_section_id',
+        //     'createdBy:id,section_id',
+        //     'createdBy.section:id,name',
+        //     'updatedBy:id,name',
+        // ])
+        //     // ->whereProjectId(1)
+        //     ->whereHas('users', function ($query) {
+        //         return $query->whereIn('section_id', [1, 2, 3, 4])
+        //             ->orWhere('sub_section_id', user()->sub_section_id);
+        //     })
+        //     ->get();
         if ($request->ajax()) {
             $tasks = Task::with([
+                'project:id,job_name',
                 'users:id,name,email,section_id',
                 'createdBy:id,section_id',
                 'createdBy.section:id,name',
                 'updatedBy:id,name',
-            ])->whereProjectId(1)
+            ])
+                // ->whereProjectId(1)
                 ->whereHas('users', function ($query) {
                     return $query->whereIn('section_id', [1, 2, 3, 4])
                         ->orWhere('sub_section_id', user()->sub_section_id);
@@ -34,21 +48,24 @@ class TaskController extends Controller
 
             return DataTables::of($tasks)
                 ->addIndexColumn()
+                ->addColumn('deadline', function ($row) {
+                    return bdDate($row->deadline);
+                })
                 ->addColumn('priority', function ($row) {
                     return priority($row->priority);
                 })
-                ->addColumn('content', function ($row) {
-                    return '<div>'.$row->content.'</div>';
+                ->addColumn('task_description', function ($row) {
+                    return '<div>' . $row->task_description . '</div>';
                 })
                 ->addColumn('user', function ($row) {
                     return $row->users->map(function ($user) {
-                        return '<span class="badge text-bg-success">'.$user->name.'</span>';
+                        return '<span class="badge text-bg-success">' . $user->name . '</span>';
                     })->implode(' ');
                 })
                 ->addColumn('image', function ($row) {
                     $path = imagePath('project', $row->image);
 
-                    return '<img src="'.$path.'" width="70px" alt="image">';
+                    return '<img src="' . $path . '" width="70px" alt="image">';
                 })
                 ->addColumn('action', function ($row) {
                     $btn = '';
@@ -62,7 +79,7 @@ class TaskController extends Controller
 
                     return $btn;
                 })
-                ->rawColumns(['priority', 'user', 'content', 'is_active', 'action'])
+                ->rawColumns(['priority', 'user', 'task_description', 'is_active', 'action'])
                 ->make(true);
         }
 
@@ -83,13 +100,14 @@ class TaskController extends Controller
 
         $data = $request->validated();
         $data['created_by'] = user()->id;
-        if(user()->sub_section_id){
+        if (user()->sub_section_id) {
             $data['task_request'] = 1;
         }
 
         try {
             $task = Task::create($data);
             $task->users()->sync($request->user_id);
+            // $task->subSections()->sync($request->sub_section_id);
             return response()->json(['message' => 'The information has been inserted'], 200);
         } catch (\Exception $e) {
             return response()->json(['message' => 'Oops something went wrong, Please try again.'], 500);

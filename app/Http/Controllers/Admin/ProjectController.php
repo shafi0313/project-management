@@ -22,34 +22,33 @@ class ProjectController extends Controller
         if ($error = $this->authorize('project-manage')) {
             return $error;
         }
+        // return  $projects = Project::with([
+        //     // 'tasks',
+        //     'users:id,name',
+        //     'subSections:id,name,section_id',
+        //     'createdBy:id,section_id',
+        //     'createdBy.section:id,name',
+        //     // 'updatedBy:id,name',
+        // ])
+        //     ->whereHas('subSections', function ($q) {
+        //         $q->whereIn('section_id', [1, 2, 3, 4])
+        //             ->orWhere('sub_section_id', user()->sub_section_id);
+        //     })
+        //     ->get();
 
         if ($request->ajax()) {
             $projects = Project::with([
-                'tasks',
+                // 'tasks',
                 'users:id,name',
                 'subSections:id,name,section_id',
                 'createdBy:id,section_id',
                 'createdBy.section:id,name',
-                'updatedBy:id,name',
+                // 'updatedBy:id,name',
             ])
                 ->whereHas('subSections', function ($q) {
                     $q->whereIn('section_id', [1, 2, 3, 4])
                         ->orWhere('sub_section_id', user()->sub_section_id);
-                });
-
-            // $projects = Project::with([
-            //     'tasks',
-            //     'users:id,name,section_id',
-            //     'subSections:id,name',
-            //     'createdBy:id,section_id',
-            //     'createdBy.section:id,name',
-            //     'updatedBy:id,name',
-            // ])
-            //     ->whereHas('users', function ($query) {
-            //         return $query->whereIn('section_id', [1, 2, 3, 4])
-            //             ->orWhere('sub_section_id', user()->sub_section_id);
-            //     });
-
+                })->latest();
             return DataTables::of($projects)
                 ->addIndexColumn()
                 ->addColumn('job_description', function ($row) {
@@ -100,10 +99,6 @@ class ProjectController extends Controller
                         return projectStatus($row->status);
                     }
                 })
-                // ->addColumn('image', function ($row) {
-                //     $path = imagePath('project', $row->image);
-                //     return '<img src="' . $path . '" width="70px" alt="image">';
-                // })
                 ->addColumn('action', function ($row) {
                     $btn = '';
                     $btn .= view('button', ['type' => 'show', 'route' => 'admin.projects', 'row' => $row]);
@@ -135,16 +130,19 @@ class ProjectController extends Controller
                 'createdBy:id,section_id',
                 'createdBy.section:id,name',
                 'updatedBy:id,name',
-            ])->whereProjectId(1)
+            ])->whereProjectId($projectId)
                 ->whereHas('users', function ($query) {
                     return $query->whereIn('section_id', [1, 2, 3, 4])
                         ->orWhere('sub_section_id', user()->sub_section_id);
-                });
+                })->latest();
 
             return DataTables::of($tasks)
                 ->addIndexColumn()
                 ->addColumn('priority', function ($row) {
                     return priority($row->priority);
+                })
+                ->addColumn('deadline', function ($row) {
+                    return bdDate($row->deadline);
                 })
                 ->addColumn('task_description', function ($row) {
                     return '<div>' . $row->task_description . '</div>';
@@ -154,10 +152,6 @@ class ProjectController extends Controller
                         return '<span class="badge text-bg-success">' . $user->name . '</span>';
                     })->implode(' ');
                 })
-                // ->addColumn('image', function ($row) {
-                //     $path = imagePath('project', $row->image);
-                //     return '<img src="' . $path . '" width="70px" alt="image">';
-                // })
                 ->addColumn('action', function ($row) {
                     $btn = '';
                     $btn .= view('button', ['type' => 'ajax-show', 'route' => route('admin.tasks.show', $row->id), 'row' => $row]);
@@ -195,6 +189,7 @@ class ProjectController extends Controller
         try {
             $project = Project::create($data);
             $project->users()->sync($request->user_id);
+            $project->subSections()->sync($request->sub_section_id);
             return response()->json(['message' => 'The information has been inserted'], 200);
         } catch (\Exception $e) {
             // return response()->json(['message' => $e->getMessage()], 500);

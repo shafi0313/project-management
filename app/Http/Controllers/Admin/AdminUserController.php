@@ -20,7 +20,11 @@ class AdminUserController extends Controller
         }
 
         if ($request->ajax()) {
-            $admin_users = User::with(['section:id,name','subSection:id,name'])->whereIn('role', [1]);
+            $admin_users = User::with([
+                'section:id,name',
+                'subSection:id,name'
+            ])->whereIn('role', [1])
+                ->orderBy('name');
 
             return DataTables::of($admin_users)
                 ->addIndexColumn()
@@ -32,7 +36,7 @@ class AdminUserController extends Controller
                 })
                 ->addColumn('image', function ($row) {
                     $path = imagePath('user', $row->image);
-                    return '<img src="'.$path.'" width="70px" alt="image">';
+                    return '<img src="' . $path . '" width="70px" alt="image">';
                 })
                 ->addColumn('is_active', function ($row) {
                     if (userCan('admin-user-edit')) {
@@ -86,7 +90,7 @@ class AdminUserController extends Controller
         }
         try {
             $admin_user = User::create($data);
-            // $admin_user->assignRole($request->role);
+            $admin_user->assignRole(['superadmin']);
             return response()->json(['message' => 'The information has been inserted'], 200);
         } catch (\Exception $e) {
             return response()->json(['message' => 'Oops something went wrong, Please try again.'], 500);
